@@ -81,7 +81,7 @@ funciones : funcion funciones								{ $2->push_back($1); }
 funcion : TFUNC nombre TPARENL argumentos TPARENR bloque	{ $$ = new NFuncion(*$2, *$4, *$6); } 
 		;
 
-nombre : TIDENTIFICADOR					{ $$ = new NIdentificador(*$1);/*delete $1;*/ }
+nombre : TIDENTIFICADOR					{ $$ = new NIdentificador(*$1); delete $1; }
 	   ;
 		
 argumentos : /* lambda */				{ $$ = new ListaVariables(); }
@@ -141,13 +141,13 @@ termino : numero				{ $$ = $1; }
 	| TPARENL expresion TPARENR	{ $$ = $2; }
 	;
 
-numero : TENTERO				{ $$ = new NEntero(atol($1->c_str()));/* delete $1; */}
-	| TDOUBLE					{ $$ = new NDouble(atof($1->c_str()));/* delete $1; */}
+numero : TENTERO				{ $$ = new NEntero(atol($1->c_str())); delete $1; }
+	| TDOUBLE					{ $$ = new NDouble(atof($1->c_str())); delete $1; }
 	| TPI						{ $$ = new NDouble(3.141592); }
-	| nombre					{ $$ = new NIdentificador(*$1); /*delete $1; */}
+	| nombre					{ $$ = new NIdentificador(*$1); delete $1; }
 	;
 
-llamada_funcion : nombre TPARENL expresiones TPARENR	{ $$ = new NLlamadaFuncion(*$1, *$3);/* delete $3; */}
+llamada_funcion : nombre TPARENL expresiones TPARENR	{ $$ = new NLlamadaFuncion(*$1, *$3); delete $3; }
 
 condicion : 
 	 TNOT subcondicion									{ $$ = new NOperacionBooleana(*$2); } 
