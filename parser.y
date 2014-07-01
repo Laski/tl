@@ -2,6 +2,7 @@
 	#include "node.h"
         #include <cstdio>
         #include <cstdlib>
+	#include <string>
 	NPrograma *programBlock; /* the top level root Nodo of our final AST */
 
 	extern int yylex();
@@ -16,12 +17,13 @@
 	NBloque *block;
 	NFuncion *func;
 	NExpresion *expr;
+	NNumero *num;
 	NCondicion *cond;
 	NSentencia *sent;
 	NIdentificador *ident;
 	NLlamadaFuncion *llamfunc;
 	std::vector<NIdentificador*> *varvec;
-	std::vector<NFuncion*> *funcvec;
+	std::map<std::string,NFuncion*> *funcdicc;
 	std::vector<NExpresion*> *exprvec;
 	std::vector<NSentencia*> *sentvec;
 	std::string *string;
@@ -48,11 +50,12 @@
 */
  
 %type <ident> nombre 
-%type <expr> numero expresion termino factor expr_aritmetica
+%type <expr> expresion termino factor expr_aritmetica
+%type <num> numero
 %type <varvec> argumentos
 %type <exprvec> expresiones
 %type <sentvec> sentencias
-%type <funcvec> funciones
+%type <funcdicc> funciones
 %type <programa> programa
 %type <func> funcion
 %type <llamfunc> llamada_funcion
@@ -71,11 +74,18 @@
 
 %%
 
-programa : funciones ploteo								{std::cout << "programa" << std::endl; $$ = new NPrograma(*$1, *$2);} 
+programa : funciones ploteo								{std::cout << "programa" << std::endl; $$ = new NPrograma(*$1, *$2); programBlock = $$} 
 		;
-		
-funciones : funciones funcion								{std::cout << "funciones" << std::endl; $1->push_back($2); }
-	  | funcion 											{ std::cout << "funcion" << std::endl; $$ = new ListaFunciones(); $$->push_back($1); }
+	
+//Acá usamos el diccionario. Por alguna razon no compila si usamos el operator[], por lo que tuve que usar insert y quedo más feo.	
+funciones : funciones funcion								{std::cout << "funciones" << std::endl; 
+																if($1->find($2->id.nombre) != $1->end()){
+																	std::cout << "ERROR: funcion '" << $2->id.nombre << "' declarada dos veces." << std::endl;
+																	YYABORT;
+																}else 
+																	$1->insert(std::pair<std::string, NFuncion*>($2->id.nombre, $2)); }
+	  | funcion 											{ std::cout << "funcion" << std::endl; $$ = new DiccFunciones(); 
+	  															$$->insert(std::pair<std::string, NFuncion*>($1->id.nombre, $1) ); }
 	  ;
 
 funcion : TFUNC nombre TPARENL argumentos TPARENR bloque	{ std::cout << "nueva funcion" << std::endl; $$ = new NFuncion(*$2, *$4, *$6); } 
@@ -138,13 +148,13 @@ factor : termino				{ std::cout << "factor termino" << std::endl; $$ = $1; }
 	;
 	
 termino : numero				{ std::cout << "termino numero" << std::endl; $$ = $1; }
+	| nombre					{ std::cout << "termino nombre" << std::endl; $$ = new NIdentificador(*$1); delete $1; }
 	| TPARENL expresion TPARENR	{ std::cout << "termino expresion" << std::endl; $$ = $2; }
 	;
 
-numero : TENTERO				{ std::cout << "num entero" << std::endl; $$ = new NEntero(atol($1->c_str())); delete $1; }
-	| TDOUBLE					{ std::cout << "num doble" << std::endl; $$ = new NDouble(atof($1->c_str())); delete $1; }
-	| TPI						{ std::cout << "num pi" << std::endl; $$ = new NDouble(3.141592); }
-	| nombre					{ std::cout << "num nombre" << std::endl; $$ = new NIdentificador(*$1); delete $1; }
+numero : TENTERO				{ std::cout << "num entero: " << atol($1->c_str()) << std::endl; $$ = new NEntero(); $$->value = atol($1->c_str()); delete $1; }
+	| TDOUBLE					{ std::cout << "num doble: " << atof($1->c_str()) << std::endl; $$ = new NDouble(); $$-> value = atof($1->c_str()); delete $1; }
+	| TPI						{ std::cout << "num pi" << std::endl; $$ = new NDouble(); $$->value = 3.141592; }
 	;
 
 llamada_funcion : nombre TPARENL expresiones TPARENR	{ std::cout << "llamada_funcion" << std::endl; $$ = new NLlamadaFuncion(*$1, *$3); delete $3; }
@@ -165,7 +175,7 @@ subcondicion: TPARENL condicion TPARENR					{ std::cout << "subcondicion" << std
 			;
 			
 ploteo : 
-	TPLOT TPARENL llamada_funcion TCOMA llamada_funcion TPARENR TFOR TIDENTIFICADOR TIGUAL expresion TPUNTOS expresion TPUNTOS expresion 
-	{ std::cout << "ploteo" << std::endl; $$ = new NPloteo(*$3, *$5, *$10, *$12, *$14); }
+	TPLOT TPARENL llamada_funcion TCOMA llamada_funcion TPARENR TFOR TIDENTIFICADOR TIGUAL numero TPUNTOS numero TPUNTOS numero 
+	{ std::cout << "ploteo " << $10->value << std::endl; $$ = new NPloteo(*$3, *$5, *$10, *$12, *$14); }
 	   ; 
 %%

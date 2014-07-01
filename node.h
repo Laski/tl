@@ -1,5 +1,7 @@
 #include <iostream>
 #include <vector>
+#include <map>
+#include <string>
 
 class NSentencia;
 class NExpresion;
@@ -9,8 +11,10 @@ class NPloteo;
 class NBloque;
 class NLlamadaFuncion;
 class NCondicion;
+class NDouble;
+class NNumero;
 
-typedef std::vector<NFuncion*> ListaFunciones;
+typedef std::map<std::string,NFuncion*> DiccFunciones;
 typedef std::vector<NSentencia*> ListaSentencias;
 typedef std::vector<NExpresion*> ListaExpresiones;
 typedef std::vector<NIdentificador*> ListaVariables;
@@ -36,9 +40,9 @@ public:
 
 class NPrograma : public Nodo { 
 public:
-	ListaFunciones funciones;
+	DiccFunciones funciones;
 	NPloteo& ploteo;
-	NPrograma(ListaFunciones funciones, NPloteo& ploteo) : 
+	NPrograma(DiccFunciones funciones, NPloteo& ploteo) : 
 		funciones(funciones), ploteo(ploteo) { }
 };
 
@@ -64,10 +68,10 @@ class NPloteo : public Nodo {
 public:
 	NLlamadaFuncion& func1;
 	NLlamadaFuncion& func2;
-	NExpresion& desde;
-	NExpresion& paso;
-	NExpresion& hasta;
-	NPloteo(NLlamadaFuncion& func1, NLlamadaFuncion& func2, NExpresion& desde, NExpresion& paso, NExpresion& hasta) : 
+	NNumero& desde;
+	NNumero& paso;
+	NNumero& hasta;
+	NPloteo(NLlamadaFuncion& func1, NLlamadaFuncion& func2, NNumero& desde, NNumero& paso, NNumero& hasta) : 
 		func1(func1), func2(func2), desde(desde), paso(paso), hasta(hasta) { }
 };
 
@@ -132,6 +136,11 @@ public:
 class NExpresion : public Nodo {
 };
 
+class NNumero : public NExpresion{
+public:
+	double value;
+};
+
 class NLlamadaFuncion : public NExpresion {
 public:
 	const NIdentificador& id;
@@ -149,16 +158,18 @@ public:
 		expr1(expr1), expr2(expr2), cod_op(cod_op) { }
 };
 
-class NEntero : public NExpresion {
+class NEntero : public NNumero {
 public:
 	long long value;
-	NEntero(long long value) : value(value) { }
+	NEntero(long long val) : value(val) { }; //Este constructor no carga el valor en value
+	NEntero(){};
 };
 
-class NDouble : public NExpresion {
+class NDouble : public NNumero {
 public:
 	double value;
-	NDouble(double value) : value(value) { }
+	NDouble(double val) : value(val) { } //Este constructor no carga el valor en value
+	NDouble(){};
 };
 
 class NIdentificador : public NExpresion {
