@@ -18,7 +18,9 @@ typedef std::map<std::string,NFuncion*> DiccFunciones;
 typedef std::vector<NSentencia*> ListaSentencias;
 typedef std::vector<NExpresion*> ListaExpresiones;
 typedef std::vector<NIdentificador*> ListaVariables;
+typedef std::map<std::string, double> DiccVariables;
 
+//COD OP CONDICIONES
 #define NOT 	0
 #define AND 	1
 #define OR  	2
@@ -28,10 +30,19 @@ typedef std::vector<NIdentificador*> ListaVariables;
 #define MENORIGUAL  	6
 #define MAYORIGUAL  	7
 #define DISTINTO  		8
+
+//COD OP ARITMETICAS
 #define MAS  	9
 #define MENOS  	10
 #define MUL  	11
 #define DIV  	12
+
+//COD OP SENTENCIAS
+#define IFTHEN  		1
+#define IFTHENELSE  	2
+#define WHILE  			3
+#define ASIGNACION  	4
+#define RETURN		  	5
 
 class Nodo {
 public:
@@ -54,6 +65,7 @@ public:
 	NFuncion(const NIdentificador& id, 
 			const ListaVariables& argumentos, NBloque& bloque) :
 		id(id), argumentos(argumentos), bloque(bloque) { }
+	double evaluar(DiccVariables& vars);
 };
 
 class NBloque : public Nodo {
@@ -62,6 +74,8 @@ public:
 	NBloque() : sentencias(*(new ListaSentencias())) {};
 	NBloque(ListaSentencias& sentencias) :
 		sentencias(sentencias) { };
+
+	int evaluar(DiccVariables& vars);
 };
 
 class NPloteo : public Nodo {
@@ -82,33 +96,39 @@ public:
 /***********************************************************/
 
 class NSentencia : public Nodo {
+public:
+	int cod_sent;
+	virtual int evaluar(DiccVariables& vars); //devuelve 1 si ejecuto return
 };
 
 class NReturn : public NSentencia {
 public:
 	NExpresion& expresion;
 	NReturn(NExpresion& expresion) : 
-		expresion(expresion) { }
+		expresion(expresion) { cod_sent = RETURN; }
+
+	int evaluar(DiccVariables& vars);
 };
 
-class NIf : public NSentencia {
-};
-
-class NIfThen : public NIf {
+class NIfThen : public NSentencia {
 public:
 	NCondicion& cond;
 	NBloque& bloque;
 	NIfThen(NCondicion& cond, NBloque& bloque) : 
-		cond(cond), bloque(bloque) { }	
+		cond(cond), bloque(bloque) { cod_sent = IFTHEN; }
+
+	int evaluar(DiccVariables& vars);
 };
 
-class NIfThenElse : public NIf {
+class NIfThenElse : public NSentencia {
 public:
 	NCondicion& cond;
 	NBloque& bloqueT;
 	NBloque& bloqueF;
 	NIfThenElse(NCondicion& cond, NBloque& bloqueT, NBloque& bloqueF) : 
-		cond(cond), bloqueT(bloqueT), bloqueF(bloqueF) { }	
+		cond(cond), bloqueT(bloqueT), bloqueF(bloqueF) { cod_sent = IFTHENELSE; }
+
+	int evaluar(DiccVariables& vars);
 };
 
 class NWhile : public NSentencia {
@@ -116,7 +136,9 @@ public:
 	NCondicion& cond;
 	NBloque& bloque;
 	NWhile(NCondicion& cond, NBloque& bloque) : 
-		cond(cond), bloque(bloque) { }
+		cond(cond), bloque(bloque) { cod_sent = WHILE; }
+
+	int evaluar(DiccVariables& vars);
 };
 
 class NAsignacion : public NSentencia {
@@ -124,7 +146,9 @@ public:
 	NIdentificador& lhs;
 	NExpresion& rhs;
 	NAsignacion(NIdentificador& lhs, NExpresion& rhs) : 
-		lhs(lhs), rhs(rhs) { }
+		lhs(lhs), rhs(rhs) { cod_sent = ASIGNACION; }
+
+	int evaluar(DiccVariables& vars);
 };
 
 /***********************************************************/
@@ -134,11 +158,16 @@ public:
 /***********************************************************/
 
 class NExpresion : public Nodo {
+public:
+	virtual double evaluar(DiccVariables& vars);
 };
 
 class NNumero : public NExpresion{
 public:
 	double value;
+	double evaluar(DiccVariables& vars){
+		return value;
+	}
 };
 
 class NLlamadaFuncion : public NExpresion {
@@ -147,6 +176,13 @@ public:
 	ListaExpresiones argumentos;
 	NLlamadaFuncion(const NIdentificador& id, ListaExpresiones& argumentos) :
 		id(id), argumentos(argumentos) { }
+
+	// evaluar(DiccVariables& vars){
+	// 	//Inicializo mis variables locales
+	// 	DiccVariables vars;
+	// 	for(int i = 0; i < params.size(); i++)
+	// 		vars[funcion.argumentos[i]->nombre] = params[i];
+	// }
 };
 
 class NOperacionAritmetica : public NExpresion {
@@ -156,6 +192,25 @@ public:
 	NExpresion& expr2;
 	NOperacionAritmetica(int cod_op, NExpresion& expr1, NExpresion& expr2) :
 		expr1(expr1), expr2(expr2), cod_op(cod_op) { }
+
+	double evaluar(DiccVariables& vars){
+		double res;
+		switch(cod_op){
+			case MAS:
+				res = expr1.evaluar(vars) + expr2.evaluar(vars);
+				break;
+			case MENOS:
+				res = expr1.evaluar(vars) - expr2.evaluar(vars);
+				break;
+			case MUL:
+				res = expr1.evaluar(vars) * expr2.evaluar(vars);
+				break;
+			case DIV:
+				res = expr1.evaluar(vars) / expr2.evaluar(vars);
+				break;
+		}
+		return res;
+	}
 };
 
 class NEntero : public NNumero {
@@ -176,6 +231,10 @@ class NIdentificador : public NExpresion {
 public:
 	std::string nombre;
 	NIdentificador(const std::string& nombre) : nombre(nombre) { }
+
+	double evaluar(DiccVariables& vars){
+		return vars[nombre]; //si la variable no está definida deberíamos poder atrapar el error en el parsing
+	}
 };
 
 /***********************************************************/
@@ -185,6 +244,8 @@ public:
 /***********************************************************/
 
 class NCondicion : public Nodo {
+public:
+	virtual bool evaluar(DiccVariables& vars);
 };
 
 class NOperacionBooleana : public NCondicion {
@@ -193,16 +254,113 @@ public:
 	NCondicion& cond1;
 	NCondicion& cond2;
 	NOperacionBooleana(int cod_op, NCondicion& cond1, NCondicion& cond2) :
-		cond1(cond1), cond2(cond2), cod_op(cod_op) { }
+		cond1(cond1), cond2(cond2), cod_op(cod_op) { };
 	NOperacionBooleana(NCondicion& cond1) :
-		cond1(cond1), cond2(cond1), cod_op(NOT) { } 	// cond2 no se mira
+		cond1(cond1), cond2(cond1), cod_op(NOT) { }; 	// cond2 no se mira
+
+	bool evaluar(DiccVariables& vars){
+		bool res;
+		switch(cod_op){
+			case AND:
+				res = cond1.evaluar(vars) && cond2.evaluar(vars);
+				break;
+			case OR:
+				res = cond1.evaluar(vars) || cond2.evaluar(vars);
+				break;
+			case NOT:
+				res = !cond1.evaluar(vars);
+				break;
+		}
+		return res;
+	}
+
 };
 
 class NComparacion : public NCondicion { 
 public:
-	int cod_comp;
+	int cod_op;
 	NExpresion& expr1;
 	NExpresion& expr2;
+
 	NComparacion(int cod_comp, NExpresion& expr1, NExpresion& expr2) : 
-		cod_comp(cod_comp), expr1(expr1), expr2(expr2) { }
+		cod_op(cod_comp), expr1(expr1), expr2(expr2) { };
+
+	bool evaluar(DiccVariables& vars){
+		bool res;
+		switch(cod_op){
+			case MAYOR:
+				res = expr1.evaluar(vars) > expr2.evaluar(vars);
+				break;
+			case MAYORIGUAL:
+				res = expr1.evaluar(vars) >= expr2.evaluar(vars);
+				break;
+			case MENOR:
+				res = expr1.evaluar(vars) < expr2.evaluar(vars);
+				break;
+			case MENORIGUAL:
+				res = expr1.evaluar(vars) <= expr2.evaluar(vars);
+				break;
+			case DISTINTO:
+				res = expr1.evaluar(vars) != expr2.evaluar(vars);
+				break;
+			case IGUAL:
+				res = expr1.evaluar(vars) == expr2.evaluar(vars);
+				break;
+		}
+		return res;
+	}
 };
+
+
+double NFuncion::evaluar(DiccVariables& vars){
+	//Ejecutar sentencias
+	ListaSentencias sent = bloque.sentencias;
+	ListaSentencias::iterator it = bloque.sentencias.begin();
+	int estado = 0;
+	while(estado != 1){
+		estado = (*it)->evaluar(vars);
+		it++;
+	}
+	return vars["__res__"];
+}
+
+int NBloque::evaluar(DiccVariables& vars){
+	//Ejecutar sentencias
+	ListaSentencias::iterator it = sentencias.begin();
+	int estado = 0;
+	while(estado != 1 && it != sentencias.end()){
+		estado = (*it)->evaluar(vars);
+		it++;
+	}
+	return estado;
+}
+
+int NReturn::evaluar(DiccVariables& vars){
+	vars["__res__"] = expresion.evaluar(vars);
+	return 1;
+}
+
+int NIfThen::evaluar(DiccVariables& vars){
+	if(cond.evaluar(vars))
+		return bloque.evaluar(vars);
+}
+
+int NIfThenElse::evaluar(DiccVariables& vars){
+	if(cond.evaluar(vars))
+		return bloqueT.evaluar(vars);
+	else
+		return bloqueF.evaluar(vars);
+}
+
+int NWhile::evaluar(DiccVariables& vars){
+	int estado = 0;
+	while(estado != 1 && cond.evaluar(vars)){
+		estado = bloque.evaluar(vars);
+	}
+	return estado;		
+}
+
+int NAsignacion::evaluar(DiccVariables& vars){
+	vars[lhs.nombre] = rhs.evaluar(vars);
+	return 0;
+}
