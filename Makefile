@@ -3,6 +3,7 @@ all: parser
 OBJS = parser.o  \
        main.o    \
        tokens.o  \
+       node.o    \
 
 CPPFLAGS = `llvm-config --cppflags`
 LDFLAGS = `llvm-config --ldflags`
