@@ -87,10 +87,10 @@ class NPloteo : public Nodo {
 public:
 	NLlamadaFuncion& func1;
 	NLlamadaFuncion& func2;
-	NNumero& desde;
-	NNumero& paso;
-	NNumero& hasta;
-	NPloteo(NLlamadaFuncion& func1, NLlamadaFuncion& func2, NNumero& desde, NNumero& paso, NNumero& hasta) : 
+	NExpresion& desde;
+	NExpresion& paso;
+	NExpresion& hasta;
+	NPloteo(NLlamadaFuncion& func1, NLlamadaFuncion& func2, NExpresion& desde, NExpresion& paso, NExpresion& hasta) : 
 		func1(func1), func2(func2), desde(desde), paso(paso), hasta(hasta) { };
 	~NPloteo(){};
 };

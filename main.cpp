@@ -28,14 +28,17 @@ int main(int argc, char **argv)
 {   
 	yyparse();
 	cerr << "parse over" << endl <<endl;
-
-	double desde = programBlock->ploteo.desde.value;
-	double paso = programBlock->ploteo.paso.value;
-	double hasta = programBlock->ploteo.hasta.value;
+	return 1;
 
 	DiccFunciones& funcs = programBlock->funciones;
 	string id_f1 = programBlock->ploteo.func1.id.nombre;
 	string id_f2 = programBlock->ploteo.func2.id.nombre;
+
+	DiccVariables v;
+	double desde = programBlock->ploteo.desde.evaluar(v, funcs);
+	double paso = programBlock->ploteo.paso.evaluar(v, funcs);
+	double hasta = programBlock->ploteo.hasta.evaluar(v, funcs);
+
 	std::vector<double> resultados_1 = ejecutar_funcion(desde, hasta, paso, funcs, id_f1);
 	std::vector<double> resultados_2 = ejecutar_funcion(desde, hasta, paso, funcs, id_f2);
 
