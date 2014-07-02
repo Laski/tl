@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 int f(){
 	return 42;
 }
