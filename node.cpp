@@ -6,7 +6,7 @@
 double NFuncion::evaluar(ListaExpresiones& argumentos, DiccVariables& vars, DiccFunciones& funcs){
 
 
-	std::cout << "evaluar funcion: " << id.nombre << std::endl;
+	DEBUG_OUT("evaluar funcion: " << id.nombre);
 	//Ejecutar sentencias
 	
 	std::vector<double> args;

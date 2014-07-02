@@ -152,30 +152,10 @@ expresion:
 		| TPARENL expresion TPARENR 	{ DEBUG_OUT("expresion -> (expresion)"); $$ = $2; }
 		;
 
-<<<<<<< HEAD
-
-/************************************************************
-
-
-factor : termino				{ DEBUG_OUT("factor termino"); $$ = $1; }
-	| termino TMAS termino		{ DEBUG_OUT("factor mas"); $$ = new NOperacionAritmetica(MAS, *$1, *$3); }
-	| termino TMENOS termino	{ DEBUG_OUT("factor menos"); $$ = new NOperacionAritmetica(MENOS, *$1, *$3); }
-	;
-	
-termino : numero				{ DEBUG_OUT("termino -> numero"); $$ = $1; }
-	| nombre					{ DEBUG_OUT("termino -> nombre"); $$ = new NIdentificador(*$1); delete $1; }
-	| llamada_funcion			{ DEBUG_OUT("termino -> llamada_funcion"); $$ = $1;}
-	| TPARENL expresion TPARENR	{ DEBUG_OUT("termino -> expresion"); $$ = $2; }
-	;
-*/
+/************************************************************/
 numero : TENTERO				{  $$ = new NEntero(atol($1->c_str())); $$->value=atol($1->c_str()); DEBUG_OUT("numero -> TENTERO: " << $$->value); delete $1; }
 	| TDOUBLE					{  $$ = new NDouble(atof($1->c_str())); $$->value=atof($1->c_str()); DEBUG_OUT("numero -> TDOUBLE: " << $$->value); delete $1; }
 	| TPI						{ DEBUG_OUT("numero -> TPI"); $$ = new NDouble(3.141592); }
-=======
-numero : TENTERO				{ DEBUG_OUT("numero -> TENTERO: " << atol($1->c_str())); $$ = new NEntero(); $$->value = atol($1->c_str()); delete $1; }
-	| TDOUBLE					{ DEBUG_OUT("numero -> TDOUBLE: " << atof($1->c_str())); $$ = new NDouble(); $$-> value = atof($1->c_str()); delete $1; }
-	| TPI						{ DEBUG_OUT("numero -> TPI"); $$ = new NDouble(); $$->value = 3.141592; }
->>>>>>> f00758f8885c55999b39043f340eccbaf9a0829e
 	;
 
 llamada_funcion : nombre TPARENL expresiones TPARENR	{ DEBUG_OUT("llamada_funcion -> nombre expresiones"); $$ = new NLlamadaFuncion(*$1, *$3); delete $3; }
