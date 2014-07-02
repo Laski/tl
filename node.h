@@ -179,9 +179,7 @@ public:
 class NNumero : public NExpresion{
 public:
 	double value;
-	double evaluar(DiccVariables& vars){
-		return value;
-	};
+	double evaluar(DiccVariables& vars);
 	~NNumero(){};
 };
 
@@ -193,12 +191,6 @@ public:
 		id(id), argumentos(argumentos) { }
 	~NLlamadaFuncion(){};
 	double evaluar(DiccVariables& vars);
-	// evaluar(DiccVariables& vars){
-	// 	//Inicializo mis variables locales
-	// 	DiccVariables vars;
-	// 	for(int i = 0; i < params.size(); i++)
-	// 		vars[funcion.argumentos[i]->nombre] = params[i];
-	// }
 };
 
 class NOperacionAritmetica : public NExpresion {
@@ -209,24 +201,7 @@ public:
 	NOperacionAritmetica(int cod_op, NExpresion& expr1, NExpresion& expr2) :
 		expr1(expr1), expr2(expr2), cod_op(cod_op) { }
 	~NOperacionAritmetica(){};
-	double evaluar(DiccVariables& vars){
-		double res;
-		switch(cod_op){
-			case MAS:
-				res = expr1.evaluar(vars) + expr2.evaluar(vars);
-				break;
-			case MENOS:
-				res = expr1.evaluar(vars) - expr2.evaluar(vars);
-				break;
-			case MUL:
-				res = expr1.evaluar(vars) * expr2.evaluar(vars);
-				break;
-			case DIV:
-				res = expr1.evaluar(vars) / expr2.evaluar(vars);
-				break;
-		}
-		return res;
-	}
+	double evaluar(DiccVariables& vars);
 };
 
 class NEntero : public NNumero {
@@ -250,9 +225,7 @@ public:
 	std::string nombre;
 	NIdentificador(const std::string& nombre) : nombre(nombre) { }
 	~NIdentificador(){};
-	double evaluar(DiccVariables& vars){
-		return vars[nombre]; //si la variable no está definida deberíamos poder atrapar el error en el parsing
-	}
+	double evaluar(DiccVariables& vars);
 };
 
 /***********************************************************/

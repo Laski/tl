@@ -52,3 +52,39 @@ int NAsignacion::evaluar(DiccVariables& vars){
 	vars[lhs.nombre] = rhs.evaluar(vars);
 	return 0;
 }
+
+double NLlamadaFuncion::evaluar(DiccVariables& vars){
+	//Inicializo mis variables locales
+	// DiccVariables vars;
+	// for(int i = 0; i < params.size(); i++)
+	// 	vars[argumentos[i]->nombre] = params[i];
+	return 1;
+}
+
+double NNumero::evaluar(DiccVariables& vars){
+	return value;
+};
+
+
+double NOperacionAritmetica::evaluar(DiccVariables& vars){
+	double res;
+	switch(cod_op){
+		case MAS:
+			res = expr1.evaluar(vars) + expr2.evaluar(vars);
+			break;
+		case MENOS:
+			res = expr1.evaluar(vars) - expr2.evaluar(vars);
+			break;
+		case MUL:
+			res = expr1.evaluar(vars) * expr2.evaluar(vars);
+			break;
+		case DIV:
+			res = expr1.evaluar(vars) / expr2.evaluar(vars);
+			break;
+	}
+	return res;
+}
+
+double NIdentificador::evaluar(DiccVariables& vars){
+	return vars[nombre]; //si la variable no está definida deberíamos poder atrapar el error en el parsing
+}
