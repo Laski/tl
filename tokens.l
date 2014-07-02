@@ -4,11 +4,13 @@
 #include "parser.hpp"
 #define SAVE_TOKEN yylval.string = new std::string(yytext, yyleng)
 #define TOKEN(t) (yylval.token = t)
+int linea = 1;
 %}
 %option noyywrap
 
 %%
-[ \t\n]					;
+[ \t]					;
+[\n]					std::cout << "Linea: " << linea << std::endl; linea++;
 "return"				return TOKEN(TRETURN);
 "if"					return TOKEN(TIF);
 "then"					return TOKEN(TTHEN);

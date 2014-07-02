@@ -61,7 +61,7 @@
 %type <llamfunc> llamada_funcion
 %type <block> bloque
 %type <sent> sentencia asignacion ifthenelse return while
-%type <cond> condicion subcondicion
+%type <cond> condicion
 %type <plot> ploteo
 
 
@@ -74,7 +74,7 @@
 
 %%
 
-programa : funciones ploteo								{std::cout << "programa" << std::endl; $$ = new NPrograma(*$1, *$2); programBlock = $$} 
+programa : funciones ploteo								{std::cout << "programa" << std::endl; $$ = new NPrograma(*$1, *$2); programBlock = $$; } 
 		;
 	
 //Acá usamos el diccionario. Por alguna razon no compila si usamos el operator[], por lo que tuve que usar insert y quedo más feo.	
@@ -126,7 +126,9 @@ while : TWHILE condicion bloque{ std::cout << "while" << std::endl; $$ = new NWh
 	   
 return : TRETURN expresion		{ std::cout << "return" << std::endl; $$ = new NReturn(*$2); }
 		;
-		
+
+/*http://www-h.eng.cam.ac.uk/help/tpl/languages/flexbison/*/
+
 expresiones : /* lambda */		{ std::cout << "expresiones vacia" << std::endl; $$ = new ListaExpresiones(); }
 	| expresiones TCOMA expresion{ std::cout << "expresiones varias" << std::endl; $1->push_back($3); }
 	| expresion					{ std::cout << "expresiones una" << std::endl; $$ = new ListaExpresiones(); $$->push_back($1); }
@@ -134,7 +136,6 @@ expresiones : /* lambda */		{ std::cout << "expresiones vacia" << std::endl; $$ 
 	
 expresion : expr_aritmetica		{ std::cout << "expresion aritmetica" << std::endl; $$ = $1; }
 	| TMENOS expr_aritmetica	{ std::cout << "expresion: menos aritmetica" << std::endl; $$ = new NOperacionAritmetica(MENOS, *(new NEntero(0)), *$2); } // -x es 0-x
-	| llamada_funcion			{ std::cout << "expresion llamada_funcion" << std::endl; $$ = $1;}
 	;
 
 expr_aritmetica : factor		{ std::cout << "expr_aritmetica factor" << std::endl; $$ = $1; }
@@ -149,6 +150,7 @@ factor : termino				{ std::cout << "factor termino" << std::endl; $$ = $1; }
 	
 termino : numero				{ std::cout << "termino numero" << std::endl; $$ = $1; }
 	| nombre					{ std::cout << "termino nombre" << std::endl; $$ = new NIdentificador(*$1); delete $1; }
+	| llamada_funcion			{ std::cout << "termino llamada_funcion" << std::endl; $$ = $1;}
 	| TPARENL expresion TPARENR	{ std::cout << "termino expresion" << std::endl; $$ = $2; }
 	;
 
@@ -160,20 +162,17 @@ numero : TENTERO				{ std::cout << "num entero: " << atol($1->c_str()) << std::e
 llamada_funcion : nombre TPARENL expresiones TPARENR	{ std::cout << "llamada_funcion" << std::endl; $$ = new NLlamadaFuncion(*$1, *$3); delete $3; }
 
 condicion : 
-	 TNOT subcondicion									{ std::cout << "condicion not" << std::endl; $$ = new NOperacionBooleana(*$2); } 
-	| condicion TAND subcondicion						{ std::cout << "condicion and" << std::endl; $$ = new NOperacionBooleana(AND, *$1, *$3); } 
-	| condicion TOR subcondicion						{ std::cout << "condicion or" << std::endl; $$ = new NOperacionBooleana(OR, *$1, *$3); } 
-	| expresion TIGUAL expresion						{ std::cout << "condicion igual" << std::endl; $$ = new NComparacion(IGUAL, *$1, *$3); } 
+	 TNOT condicion										{ std::cout << "condicion not" << std::endl; $$ = new NOperacionBooleana(*$2); } 
+	| condicion TAND condicion							{ std::cout << "condicion and" << std::endl; $$ = new NOperacionBooleana(AND, *$1, *$3); } 
+	| condicion TOR condicion							{ std::cout << "condicion or" << std::endl; $$ = new NOperacionBooleana(OR, *$1, *$3); } 
+	| expresion TIGUALIGUAL expresion					{ std::cout << "condicion igual" << std::endl; $$ = new NComparacion(IGUAL, *$1, *$3); } 
 	| expresion TDISTINTO expresion						{ std::cout << "condicion distinto" << std::endl; $$ = new NComparacion(DISTINTO, *$1, *$3); } 
 	| expresion TMENOR expresion						{ std::cout << "condicion menor" << std::endl; $$ = new NComparacion(MENOR, *$1, *$3); } 
 	| expresion TMENORIGUAL expresion					{ std::cout << "condicion menorigual" << std::endl; $$ = new NComparacion(MENORIGUAL, *$1, *$3); } 
 	| expresion TMAYOR expresion						{ std::cout << "condicion mayor" << std::endl; $$ = new NComparacion(MAYOR, *$1, *$3); } 
 	| expresion TMAYORIGUAL expresion					{ std::cout << "condicion mayorigual" << std::endl; $$ = new NComparacion(MAYORIGUAL, *$1, *$3); } 
 	;
-
-subcondicion: TPARENL condicion TPARENR					{ std::cout << "subcondicion" << std::endl; $$ = $2; }
-			;
-			
+		
 ploteo : 
 	TPLOT TPARENL llamada_funcion TCOMA llamada_funcion TPARENR TFOR TIDENTIFICADOR TIGUAL numero TPUNTOS numero TPUNTOS numero 
 	{ std::cout << "ploteo " << $10->value << std::endl; $$ = new NPloteo(*$3, *$5, *$10, *$12, *$14); }
