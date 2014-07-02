@@ -1,6 +1,12 @@
 #include "node.h"
 
+#define DEBUG 0
+#define DEBUG_OUT(s) (DEBUG == 1) ? std::cerr << s << std::endl : std::cerr << ""
+
 double NFuncion::evaluar(ListaExpresiones& argumentos, DiccVariables& vars, DiccFunciones& funcs){
+
+
+	std::cout << "evaluar funcion: " << id.nombre << std::endl;
 	//Ejecutar sentencias
 	
 	std::vector<double> args;
@@ -22,6 +28,9 @@ double NFuncion::evaluar(ListaExpresiones& argumentos, DiccVariables& vars, Dicc
 }
 
 int NBloque::evaluar(DiccVariables& vars, DiccFunciones& funcs){
+
+	DEBUG_OUT("evaluar bloque: ");
+
 	//Ejecutar sentencias
 	ListaSentencias::iterator it = sentencias.begin();
 	int estado = 0;
@@ -33,16 +42,23 @@ int NBloque::evaluar(DiccVariables& vars, DiccFunciones& funcs){
 }
 
 int NReturn::evaluar(DiccVariables& vars, DiccFunciones& funcs){
+	DEBUG_OUT("evaluar return");
+
 	vars["__res__"] = expresion.evaluar(vars, funcs);
 	return 1;
 }
 
 int NIfThen::evaluar(DiccVariables& vars, DiccFunciones& funcs){
+	DEBUG_OUT("evaluar ifthen");
+
 	if(cond.evaluar(vars, funcs))
 		return bloque.evaluar(vars, funcs);
 }
 
 int NIfThenElse::evaluar(DiccVariables& vars, DiccFunciones& funcs){
+
+	DEBUG_OUT("evaluar ifthenelse");
+
 	if(cond.evaluar(vars, funcs))
 		return bloqueT.evaluar(vars, funcs);
 	else
@@ -50,6 +66,9 @@ int NIfThenElse::evaluar(DiccVariables& vars, DiccFunciones& funcs){
 }
 
 int NWhile::evaluar(DiccVariables& vars, DiccFunciones& funcs){
+
+	DEBUG_OUT("evaluar while");
+
 	int estado = 0;
 	while(estado != 1 && cond.evaluar(vars, funcs)){
 		estado = bloque.evaluar(vars, funcs);
@@ -58,22 +77,37 @@ int NWhile::evaluar(DiccVariables& vars, DiccFunciones& funcs){
 }
 
 int NAsignacion::evaluar(DiccVariables& vars, DiccFunciones& funcs){
+
+	DEBUG_OUT("evaluar asignacion");
+
 	vars[lhs.nombre] = rhs.evaluar(vars, funcs);
 	return 0;
 }
 
 double NLlamadaFuncion::evaluar(DiccVariables& vars, DiccFunciones& funcs){
-	//Inicializo mis variables locales
 
+	DEBUG_OUT("evaluar llamada funcion: " << id.nombre);
+
+	//Inicializo mis variables locales
 	return funcs[id.nombre]->evaluar(argumentos, vars, funcs);
 }
 
-double NNumero::evaluar(DiccVariables& vars, DiccFunciones& funcs){
+double NDouble::evaluar(DiccVariables& vars, DiccFunciones& funcs){
+	DEBUG_OUT("evaluar double: " << value);
+
+	return value;
+};
+
+double NEntero::evaluar(DiccVariables& vars, DiccFunciones& funcs){
+	DEBUG_OUT("evaluar entero: " << value);
+
 	return value;
 };
 
 
 double NOperacionAritmetica::evaluar(DiccVariables& vars, DiccFunciones& funcs){
+	DEBUG_OUT("evaluar operacion aritmentica: " << cod_op);
+
 	double res;
 	switch(cod_op){
 		case MAS:
@@ -93,10 +127,14 @@ double NOperacionAritmetica::evaluar(DiccVariables& vars, DiccFunciones& funcs){
 }
 
 double NIdentificador::evaluar(DiccVariables& vars, DiccFunciones& funcs){
+	DEBUG_OUT("evaluar identificador: " << nombre << "->" << vars[nombre] );
+
 	return vars[nombre]; //si la variable no está definida deberíamos poder atrapar el error en el parsing
 }
 
 bool NOperacionBooleana::evaluar(DiccVariables& vars, DiccFunciones& funcs){
+	DEBUG_OUT("evaluar operacion booleana: " << cod_op );
+
 	bool res;
 	switch(cod_op){
 		case AND:
@@ -113,6 +151,8 @@ bool NOperacionBooleana::evaluar(DiccVariables& vars, DiccFunciones& funcs){
 }
 
 bool NComparacion::evaluar(DiccVariables& vars, DiccFunciones& funcs){
+	DEBUG_OUT("evaluar comparacion: " << cod_op );
+
 	bool res;
 	switch(cod_op){
 		case MAYOR:

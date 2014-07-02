@@ -17,6 +17,7 @@ std::vector<double> ejecutar_funcion(double desde, double hasta, double paso, Di
 	for(double i = desde; i <= hasta; i += paso){
 		args.clear();	// la lista de parametros tiene que arrancar vacia
 		args.push_back(new NDouble(i));
+		//cout << "ARG: " << args[0]->evaluar(vars, funcs) << endl;
 		double res_i = f->evaluar(args, vars, funcs);
 		resultados.push_back(res_i);
 		cerr << f_id << "(" << i << ") = " << res_i << endl;
@@ -28,6 +29,8 @@ int main(int argc, char **argv)
 {   
 	yyparse();
 	cerr << "parse over" << endl <<endl;
+
+
 
 	DiccFunciones& funcs = programBlock->funciones;
 	string id_f1 = programBlock->ploteo.func1.id.nombre;
