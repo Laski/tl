@@ -29,8 +29,10 @@ if cond1 then
 
 Una $expresion$ puede ser un $numero$ (entero, double o $\pi$), una $llamada_funcion$ (el nombre de una función con más $expresiones$ entre paréntesis como argumentos) u operaciones aritméticas entre expresiones. Para salvar las ambiguedades propias de esta parte de la gramática le indicamos a Bison la precedencia de los operadores\footnote{basándonos en el código de ejemplo de http://www-h.eng.cam.ac.uk/help/tpl/languages/flexbison/}.
 
-Una $condicion$ puede ser 
+Una $condicion$ puede ser una comparación entre dos $expresion$es u otras condiciones con operadores lógicos.
 
+Por último, la instrucción $ploteo$ consiste en dos $llamada_funcion$ con un $nombre$ de variable y tres $expresion$es que reflejan el inicio, el paso y el final.
 
+La gramática se complementa con un archivo\footnote{tokens.l} con directivas para el tokenizador, que le permite convertir símbolos terminales en los tokens que usamos, ignora saltos de línea y maneja números enteros, floats y cadenas arbitrarias (como los nombres de variables).
 
-Entre los problemas que encontramos, no pudimos armar la expresión regular para que el lexer borre los comentarios multilínea. Es por esto que para pasar los tests el archivo debe ser en primer lugar pasado por un script que borra los comentarios.
+Entre los problemas que encontramos hubo uno que no pudimos resolver: no logramos armar la expresión regular para que el tokenizador ignore los comentarios multilínea. Es por esto que para pasar los tests los archivos con comentarios debe ser en primer lugar pasados por un script hecho en bash que los borra.
