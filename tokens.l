@@ -10,7 +10,7 @@ int linea = 1;
 
 %%
 [ \t]					;
-[\n]					std::cout << "Linea: " << linea << std::endl; linea++;
+[\n]					std::cerr << "Linea: " << linea << std::endl; linea++;
 "return"				return TOKEN(TRETURN);
 "if"					return TOKEN(TIF);
 "then"					return TOKEN(TTHEN);
@@ -42,6 +42,6 @@ int linea = 1;
 [a-zA-Z_][a-zA-Z0-9_]* 	SAVE_TOKEN; return TIDENTIFICADOR;
 [0-9]+\.[0-9]+ 			SAVE_TOKEN; return TDOUBLE;
 [0-9]+					SAVE_TOKEN; return TENTERO;
-.						std::cout << "Unknown token! " << yytext << std::endl; yyterminate();
+.						std::cerr << "Unknown token! " << yytext << std::endl; yyterminate();
 
 %%

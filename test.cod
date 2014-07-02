@@ -1,7 +1,7 @@
 function f(x)
-	return 5
+	return x+1
 	
 function g(x)
-	return 6
+	return x+2
 
 plot (f(x), g(x)) for x=1..1..5
