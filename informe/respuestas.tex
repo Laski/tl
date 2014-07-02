@@ -1,0 +1,14 @@
+\subsection{1er Pregunta}
+
+Para verificar estáticamente que las condiciones de los if y los while sean booleanos se puede utilizar, en la gramática, un no terminal que represente únicamente operaciones booleanas (por ej comparación). De esta forma la gramática se asegura de que las condiciones sean booleanas y al momento de parsear el código se verifica el cumplimiento de ese requisito.
+
+\subsection{2da Pregunta} El uso del ; en la gramática de C++ permite desambiguar código. Veamoslo con un ejemplo para dejarlo más claro:
+
+\begin{algorithm} int main() { \\ int x = 0; \\ -f(); \\ return 0;\\ } \end{algorithm}
+Este es el código de un ejemplo básico de C++. Lo interesante es que, a diferencia de nuestro lenguaje, nos permite poner expresiones como si fueran instrucciones. Las llamadas a funciones en C/C++ son sentencias, a diferencia de nuestro lenguaje donde nuestras funciones no tienen efectos secundarios. 
+
+Es por esto que si quitamos los ; del código de ejemplo nos queda una ambigüedad. Veamos que sucede cuando los quitamos y notemos la ambigüedad que generaría en el lenguaje.
+
+\begin{algorithm} int main() { \\ int x = 0 \\ -f() \\ return 0\\ } \end{algorithm} 
+
+\begin{algorithm} int main() { \\ int x = 0 - f() \\ return 0\\ } \end{algorithm}
