@@ -82,7 +82,7 @@
 programa : funciones ploteo								{DEBUG_OUT("programa -> funciones ploteo"); $$ = new NPrograma(*$1, *$2); programBlock = $$; } 
 		;
 	
-//Acá usamos el diccionario. Por alguna razon no compila si usamos el operator[], por lo que tuve que usar insert y quedo más feo.	
+// Acá usamos el diccionario. Por alguna razon no compila si usamos el operator[], por lo que tuve que usar insert y quedo más feo.	
 funciones : funciones funcion								{DEBUG_OUT("funciones -> funciones funcion"); 
 																if($1->find($2->id.nombre) != $1->end()){
 																	ERROR_OUT("ERROR: funcion '" << $2->id.nombre << "' declarada dos veces.");
@@ -138,17 +138,6 @@ expresiones : /* lambda */			{ DEBUG_OUT("expresiones -> lambda"); $$ = new List
 	| expresion						{ DEBUG_OUT("expresiones -> expresion"); $$ = new ListaExpresiones(); $$->push_back($1); }
 	;
 
-/*
-expresion : expr_aritmetica		{ DEBUG_OUT("expresion -> expr_aritmetica"); $$ = $1; }
-	| TMENOS expr_aritmetica	{ DEBUG_OUT("expresion -> menos expr_aritmetica"); $$ = new NOperacionAritmetica(MENOS, *(new NEntero(0)), *$2); } // -x es 0-x
-	;
-
-expr_aritmetica : factor		{ DEBUG_OUT("expr_aritmetica -> factor"); $$ = $1; }
-	| factor TMUL factor		{ DEBUG_OUT("expr_aritmetica -> factor TMUL factor"); $$ = new NOperacionAritmetica(MUL, *$1, *$3); }
-	| factor TDIV factor		{ DEBUG_OUT("expr_aritmetica -> factor TDIV factor"); $$ = new NOperacionAritmetica(DIV, *$1, *$3); }
-	;
-
-*/
 /*http://www-h.eng.cam.ac.uk/help/tpl/languages/flexbison/*/
 
 expresion:
@@ -163,27 +152,10 @@ expresion:
 		| TPARENL expresion TPARENR 	{ DEBUG_OUT("expresion -> (expresion)"); $$ = $2; }
 		;
 
-
-/************************************************************
-
-
-factor : termino				{ DEBUG_OUT("factor termino"); $$ = $1; }
-	| termino TMAS termino		{ DEBUG_OUT("factor mas"); $$ = new NOperacionAritmetica(MAS, *$1, *$3); }
-	| termino TMENOS termino	{ DEBUG_OUT("factor menos"); $$ = new NOperacionAritmetica(MENOS, *$1, *$3); }
-	;
-	
-termino : numero				{ DEBUG_OUT("termino -> numero"); $$ = $1; }
-	| nombre					{ DEBUG_OUT("termino -> nombre"); $$ = new NIdentificador(*$1); delete $1; }
-	| llamada_funcion			{ DEBUG_OUT("termino -> llamada_funcion"); $$ = $1;}
-	| TPARENL expresion TPARENR	{ DEBUG_OUT("termino -> expresion"); $$ = $2; }
-	;
-*/
 numero : TENTERO				{ DEBUG_OUT("numero -> TENTERO: " << atol($1->c_str())); $$ = new NEntero(); $$->value = atol($1->c_str()); delete $1; }
 	| TDOUBLE					{ DEBUG_OUT("numero -> TDOUBLE: " << atof($1->c_str())); $$ = new NDouble(); $$-> value = atof($1->c_str()); delete $1; }
 	| TPI						{ DEBUG_OUT("numero -> TPI"); $$ = new NDouble(); $$->value = 3.141592; }
 	;
-
-
 
 llamada_funcion : nombre TPARENL expresiones TPARENR	{ DEBUG_OUT("llamada_funcion -> nombre expresiones"); $$ = new NLlamadaFuncion(*$1, *$3); delete $3; }
 

@@ -1,0 +1,47 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage[paper=a4paper, left=1.5cm, right=1.5cm, bottom=1.5cm, top=1.5cm]{geometry}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage[section]{placeins}
+\usepackage{caratula/caratula}
+\usepackage{listings}
+\usepackage{algorithm}
+\usepackage{graphicx}
+
+\parskip = 8pt
+
+\begin{document}
+
+\input{caratula.tex}
+%Carátula
+
+\maketitle
+\newpage
+%Indice
+%\tableofcontents
+%\newpage
+
+\section{Introducción}
+\input{introduccion.tex}
+
+\section{Decisiones}
+\input{decisiones.tex}
+
+\section{Resultados}
+\input{resultados.tex}
+
+\section{Gramática}
+\input{gramatica.tex}
+
+\section{Ejemplos de funcionamiento}
+\input{ejemplos.tex}
+
+\section{Respuestas}
+\input{respuestas.tex}
+
+\section{Manual}
+\input{manual.tex}
+
+\end{document}
