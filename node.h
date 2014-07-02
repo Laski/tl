@@ -58,6 +58,7 @@ public:
 	NPloteo& ploteo;
 	NPrograma(DiccFunciones funciones, NPloteo& ploteo) : 
 		funciones(funciones), ploteo(ploteo) { }
+	~NPrograma(){}
 };
 
 class NFuncion : public Nodo {
@@ -68,7 +69,7 @@ public:
 	NFuncion(const NIdentificador& id, 
 			const ListaVariables& argumentos, NBloque& bloque) :
 		id(id), argumentos(argumentos), bloque(bloque) { }
-
+	~NFuncion(){};
 	double evaluar(DiccVariables& vars);
 };
 
@@ -78,7 +79,7 @@ public:
 	NBloque() : sentencias(*(new ListaSentencias())) {};
 	NBloque(ListaSentencias& sentencias) :
 		sentencias(sentencias) { };
-
+	~NBloque(){};
 	int evaluar(DiccVariables& vars);
 };
 
@@ -90,7 +91,8 @@ public:
 	NNumero& paso;
 	NNumero& hasta;
 	NPloteo(NLlamadaFuncion& func1, NLlamadaFuncion& func2, NNumero& desde, NNumero& paso, NNumero& hasta) : 
-		func1(func1), func2(func2), desde(desde), paso(paso), hasta(hasta) { }
+		func1(func1), func2(func2), desde(desde), paso(paso), hasta(hasta) { };
+	~NPloteo(){};
 };
 
 /***********************************************************/
@@ -100,29 +102,23 @@ public:
 /***********************************************************/
 
 
-
-
-
-
-
-
-
-
-
-
 class NSentencia : public Nodo {
 public:
 	int cod_sent;
 	virtual int evaluar(DiccVariables& vars); //devuelve 1 si ejecuto return
+	NSentencia(){};
+	~NSentencia(){};
 };
 
 class NReturn : public NSentencia {
 public:
 	NExpresion& expresion;
 	NReturn(NExpresion& expresion) : 
-		expresion(expresion) { cod_sent = RETURN; }
+		expresion(expresion) { cod_sent = RETURN; };
+	~NReturn(){};
 
 	int evaluar(DiccVariables& vars);
+
 };
 
 class NIfThen : public NSentencia {
@@ -131,6 +127,7 @@ public:
 	NBloque& bloque;
 	NIfThen(NCondicion& cond, NBloque& bloque) : 
 		cond(cond), bloque(bloque) { cod_sent = IFTHEN; }
+	~NIfThen(){};
 
 	int evaluar(DiccVariables& vars);
 };
@@ -142,7 +139,7 @@ public:
 	NBloque& bloqueF;
 	NIfThenElse(NCondicion& cond, NBloque& bloqueT, NBloque& bloqueF) : 
 		cond(cond), bloqueT(bloqueT), bloqueF(bloqueF) { cod_sent = IFTHENELSE; }
-
+	~NIfThenElse(){};
 	int evaluar(DiccVariables& vars);
 };
 
@@ -152,7 +149,7 @@ public:
 	NBloque& bloque;
 	NWhile(NCondicion& cond, NBloque& bloque) : 
 		cond(cond), bloque(bloque) { cod_sent = WHILE; }
-
+	~NWhile(){};
 	int evaluar(DiccVariables& vars);
 };
 
@@ -162,7 +159,7 @@ public:
 	NExpresion& rhs;
 	NAsignacion(NIdentificador& lhs, NExpresion& rhs) : 
 		lhs(lhs), rhs(rhs) { cod_sent = ASIGNACION; }
-
+	~NAsignacion(){};
 	int evaluar(DiccVariables& vars);
 };
 
@@ -175,6 +172,8 @@ public:
 class NExpresion : public Nodo {
 public:
 	virtual double evaluar(DiccVariables& vars);
+	NExpresion(){};
+	~NExpresion(){};
 };
 
 class NNumero : public NExpresion{
@@ -182,7 +181,8 @@ public:
 	double value;
 	double evaluar(DiccVariables& vars){
 		return value;
-	}
+	};
+	~NNumero(){};
 };
 
 class NLlamadaFuncion : public NExpresion {
@@ -191,7 +191,7 @@ public:
 	ListaExpresiones argumentos;
 	NLlamadaFuncion(const NIdentificador& id, ListaExpresiones& argumentos) :
 		id(id), argumentos(argumentos) { }
-
+	~NLlamadaFuncion(){};
 	// evaluar(DiccVariables& vars){
 	// 	//Inicializo mis variables locales
 	// 	DiccVariables vars;
@@ -207,7 +207,7 @@ public:
 	NExpresion& expr2;
 	NOperacionAritmetica(int cod_op, NExpresion& expr1, NExpresion& expr2) :
 		expr1(expr1), expr2(expr2), cod_op(cod_op) { }
-
+	~NOperacionAritmetica(){};
 	double evaluar(DiccVariables& vars){
 		double res;
 		switch(cod_op){
@@ -233,6 +233,7 @@ public:
 	long long value;
 	NEntero(long long val) : value(val) { }; //Este constructor no carga el valor en value
 	NEntero(){};
+	~NEntero(){};
 };
 
 class NDouble : public NNumero {
@@ -240,13 +241,14 @@ public:
 	double value;
 	NDouble(double val) : value(val) { } //Este constructor no carga el valor en value
 	NDouble(){};
+	~NDouble(){};
 };
 
 class NIdentificador : public NExpresion {
 public:
 	std::string nombre;
 	NIdentificador(const std::string& nombre) : nombre(nombre) { }
-
+	~NIdentificador(){};
 	double evaluar(DiccVariables& vars){
 		return vars[nombre]; //si la variable no está definida deberíamos poder atrapar el error en el parsing
 	}
@@ -261,6 +263,8 @@ public:
 class NCondicion : public Nodo {
 public:
 	virtual bool evaluar(DiccVariables& vars);
+	NCondicion(){};
+	~NCondicion(){};
 };
 
 class NOperacionBooleana : public NCondicion {
@@ -272,7 +276,7 @@ public:
 		cond1(cond1), cond2(cond2), cod_op(cod_op) { };
 	NOperacionBooleana(NCondicion& cond1) :
 		cond1(cond1), cond2(cond1), cod_op(NOT) { }; 	// cond2 no se mira
-
+	~NOperacionBooleana(){};
 	bool evaluar(DiccVariables& vars){
 		bool res;
 		switch(cod_op){
@@ -299,7 +303,7 @@ public:
 
 	NComparacion(int cod_comp, NExpresion& expr1, NExpresion& expr2) : 
 		cod_op(cod_comp), expr1(expr1), expr2(expr2) { };
-
+	~NComparacion(){};
 	bool evaluar(DiccVariables& vars){
 		bool res;
 		switch(cod_op){
