@@ -28,7 +28,6 @@ int main(int argc, char **argv)
 {   
 	yyparse();
 	cerr << "parse over" << endl <<endl;
-	return 1;
 
 	DiccFunciones& funcs = programBlock->funciones;
 	string id_f1 = programBlock->ploteo.func1.id.nombre;
