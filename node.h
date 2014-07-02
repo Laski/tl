@@ -105,7 +105,7 @@ public:
 class NSentencia : public Nodo {
 public:
 	int cod_sent;
-	virtual int evaluar(DiccVariables& vars); //devuelve 1 si ejecuto return
+	virtual int evaluar(DiccVariables& vars) = 0; //devuelve 1 si ejecuto return
 	NSentencia(){};
 	~NSentencia(){};
 };
@@ -171,7 +171,7 @@ public:
 
 class NExpresion : public Nodo {
 public:
-	virtual double evaluar(DiccVariables& vars);
+	virtual double evaluar(DiccVariables& vars) = 0;
 	NExpresion(){};
 	~NExpresion(){};
 };
@@ -192,6 +192,7 @@ public:
 	NLlamadaFuncion(const NIdentificador& id, ListaExpresiones& argumentos) :
 		id(id), argumentos(argumentos) { }
 	~NLlamadaFuncion(){};
+	double evaluar(DiccVariables& vars);
 	// evaluar(DiccVariables& vars){
 	// 	//Inicializo mis variables locales
 	// 	DiccVariables vars;
@@ -262,7 +263,7 @@ public:
 
 class NCondicion : public Nodo {
 public:
-	virtual bool evaluar(DiccVariables& vars);
+	virtual bool evaluar(DiccVariables& vars) = 0;
 	NCondicion(){};
 	~NCondicion(){};
 };
