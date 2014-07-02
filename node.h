@@ -65,6 +65,7 @@ public:
 	NFuncion(const NIdentificador& id, 
 			const ListaVariables& argumentos, NBloque& bloque) :
 		id(id), argumentos(argumentos), bloque(bloque) { }
+
 	double evaluar(DiccVariables& vars);
 };
 
@@ -310,7 +311,6 @@ public:
 		return res;
 	}
 };
-
 
 double NFuncion::evaluar(DiccVariables& vars){
 	//Ejecutar sentencias
