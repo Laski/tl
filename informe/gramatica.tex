@@ -1,6 +1,35 @@
 El esquelto para hacer la gramática\footnote{implementada en parser.y} fue tomado de la página citada en la presentación\footnote{http://gnuu.org/2009/09/18/writing-your-own-toy-compiler/}. Sobre este esqueleto armamos nuestra gramática, que tiene varios puntos de diferencia con la que muestran de ejemplo en ese sitio.
 
-Nuestra gramática parte de un símbolo incial $programa$.
+Nuestra gramática parte de un símbolo incial $programa$ que a su vez se divide en una lista de $funciones$ y una instrucción de $ploteo$.
+
+Una función consiste en la palabra 'function' (representada por el token terminal TFUNC), un $nombre$ (que no es más que un terminal que matchea con strings no empezados por números), una lista de $argumentos$ (lista de $nombre$s separadas por comas) entre paréntesis y un $bloque$ de código.
+
+Un $bloque$ es una lista (quizás vacía) de sentencias encerradas entre llaves o una única sentencia.
+
+Una $sentencia$ puede ser una $asignacion$ (un $nombre$, un símbolo de $=$ y una $expresión$), una sentencia $ifthenelse$, un $while$ (que a su vez tiene una $condicion$ y otro $bloque$) o un $return$ (que lleva a su lado una $expresion$).
+
+El caso del $ifthenelse$ requiere un análisis específico. Un $ifthenelse$ puede tener o no tener 'else', lo cual nos trae una ambiguedad a la hora de parsear cadenas del estilo (intencionalmente sin indentar):
+\begin{verbatim}
+if cond1 then
+if cond2 then
+codigo1
+else
+codigo2
+\end{verbatim}
+que se refleja en el parser en un conflicto shift/reduce (cuando termina el codigo1 y viene un else puede tanto consumir el else y shiftear como reducir lo que ya tiene).
+Para resolverlo, nos basamos en el comportamiento de C en este caso (hacer shift, es decir, que el código se lea como
+\begin{verbatim}
+if cond1 then
+  if cond2 then
+    codigo1
+  else
+    codigo2
+\end{verbatim}
+) y como Bison por defecto elije hacer siempre shift lo dejamos así.
+
+Una $expresion$ puede ser un $numero$ (entero, double o $\pi$), una $llamada_funcion$ (el nombre de una función con más $expresiones$ entre paréntesis como argumentos) u operaciones aritméticas entre expresiones. Para salvar las ambiguedades propias de esta parte de la gramática le indicamos a Bison la precedencia de los operadores\footnote{basándonos en el código de ejemplo de http://www-h.eng.cam.ac.uk/help/tpl/languages/flexbison/}.
+
+Una $condicion$ puede ser 
 
 
 
