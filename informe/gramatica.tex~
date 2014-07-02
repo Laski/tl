@@ -1,7 +1,0 @@
-El esquelto para hacer la gramática\footnote{implementada en parser.y} fue tomado de la página citada en la presentación\footnote{http://gnuu.org/2009/09/18/writing-your-own-toy-compiler/}. Sobre este esqueleto armamos nuestra gramática, que tiene varios puntos de diferencia con la que muestran de ejemplo en ese sitio.
-
-Nuestra gramática parte de un símbolo incial $programa$.
-
-
-
-Entre los problemas que encontramos, no pudimos armar la expresión regular para que el lexer borre los comentarios multilínea. Es por esto que para pasar los tests el archivo debe ser en primer lugar pasado por un script que borra los comentarios.
