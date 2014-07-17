@@ -39,6 +39,7 @@ typedef std::map<std::string, double> DiccVariables;
 #define MENOS  	10
 #define MUL  	11
 #define DIV  	12
+#define POT 	13
 
 //COD OP SENTENCIAS
 #define IFTHEN  		1
@@ -46,6 +47,10 @@ typedef std::map<std::string, double> DiccVariables;
 #define WHILE  			3
 #define ASIGNACION  	4
 #define RETURN		  	5
+
+#define DEBUG 1
+#define DEBUG_OUT(s) (DEBUG == 1) ? std::cerr << s << std::endl : std::cerr << ""
+#define ERROR_OUT(s) std::cout << s << std::endl
 
 class Nodo {
 public:

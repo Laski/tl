@@ -7,10 +7,6 @@
 
 	extern int yylex();
 	void yyerror(const char *s) { std::printf("Error: %s\n", s);std::exit(1); }
-
-	#define DEBUG 1
-	#define DEBUG_OUT(s) (DEBUG == 1) ? std::cerr << s << std::endl : std::cerr << ""
-	#define ERROR_OUT(s) std::cout << s << std::endl
 %}
 
 /* Represents the many different ways we can access our data */

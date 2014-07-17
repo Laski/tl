@@ -1,37 +1,34 @@
+#include <cmath>
 #include "node.h"
 
-#define DEBUG 0
-#define DEBUG_OUT(s) (DEBUG == 1) ? std::cerr << s << std::endl : std::cerr << ""
-
 double NFuncion::evaluar(ListaExpresiones& argumentos, DiccVariables& vars, DiccFunciones& funcs){
-
-
 	DEBUG_OUT("evaluar funcion: " << id.nombre);
-	//Ejecutar sentencias
 	
-	std::vector<double> args;
 	//evaluar argumentos
+	std::vector<double> args;
 	for(int i = 0; i < argumentos.size(); i++)
 		args.push_back(argumentos[i]->evaluar(vars, funcs));
-
 	for(int i = 0; i < argumentos.size(); i++)
 		vars[parametros[i]->nombre] = args[i];
 
-	ListaSentencias sent = bloque.sentencias;
+	//evaluar sentencias
+	bloque.evaluar(vars, funcs);
+	return vars["__res__"];
+
+/*	ListaSentencias sent = bloque.sentencias;
 	ListaSentencias::iterator it = bloque.sentencias.begin();
 	int estado = 0;
 	while(estado != 1){
 		estado = (*it)->evaluar(vars, funcs);
 		it++;
 	}
-	return vars["__res__"];
+	return vars["__res__"];*/
 }
 
 int NBloque::evaluar(DiccVariables& vars, DiccFunciones& funcs){
-
 	DEBUG_OUT("evaluar bloque: ");
 
-	//Ejecutar sentencias
+	//ejecutar sentencias
 	ListaSentencias::iterator it = sentencias.begin();
 	int estado = 0;
 	while(estado != 1 && it != sentencias.end()){
@@ -56,7 +53,6 @@ int NIfThen::evaluar(DiccVariables& vars, DiccFunciones& funcs){
 }
 
 int NIfThenElse::evaluar(DiccVariables& vars, DiccFunciones& funcs){
-
 	DEBUG_OUT("evaluar ifthenelse");
 
 	if(cond.evaluar(vars, funcs))
@@ -66,7 +62,6 @@ int NIfThenElse::evaluar(DiccVariables& vars, DiccFunciones& funcs){
 }
 
 int NWhile::evaluar(DiccVariables& vars, DiccFunciones& funcs){
-
 	DEBUG_OUT("evaluar while");
 
 	int estado = 0;
@@ -77,7 +72,6 @@ int NWhile::evaluar(DiccVariables& vars, DiccFunciones& funcs){
 }
 
 int NAsignacion::evaluar(DiccVariables& vars, DiccFunciones& funcs){
-
 	DEBUG_OUT("evaluar asignacion");
 
 	vars[lhs.nombre] = rhs.evaluar(vars, funcs);
@@ -85,10 +79,8 @@ int NAsignacion::evaluar(DiccVariables& vars, DiccFunciones& funcs){
 }
 
 double NLlamadaFuncion::evaluar(DiccVariables& vars, DiccFunciones& funcs){
-
 	DEBUG_OUT("evaluar llamada funcion: " << id.nombre);
 
-	//Inicializo mis variables locales
 	return funcs[id.nombre]->evaluar(argumentos, vars, funcs);
 }
 
@@ -104,9 +96,8 @@ double NEntero::evaluar(DiccVariables& vars, DiccFunciones& funcs){
 	return value;
 };
 
-
 double NOperacionAritmetica::evaluar(DiccVariables& vars, DiccFunciones& funcs){
-	DEBUG_OUT("evaluar operacion aritmentica: " << cod_op);
+	DEBUG_OUT("evaluar operacion aritmetica: " << cod_op);
 
 	double res;
 	switch(cod_op){
@@ -121,6 +112,9 @@ double NOperacionAritmetica::evaluar(DiccVariables& vars, DiccFunciones& funcs){
 			break;
 		case DIV:
 			res = expr1.evaluar(vars, funcs) / expr2.evaluar(vars, funcs);
+			break;
+		case POT:
+			res = pow(expr1.evaluar(vars, funcs), expr2.evaluar(vars, funcs));
 			break;
 	}
 	return res;

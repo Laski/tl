@@ -10,7 +10,7 @@ int linea = 1;
 
 %%
 [ \t]					;
-[\n]					std::cerr << "Linea: " << linea << std::endl; linea++;
+[\n]					DEBUG_OUT("Linea: " << linea); linea++;
 "return"				return TOKEN(TRETURN);
 "if"					return TOKEN(TIF);
 "then"					return TOKEN(TTHEN);
