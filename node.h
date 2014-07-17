@@ -81,11 +81,11 @@ public:
 
 class NBloque : public Nodo {
 public:
-	ListaSentencias& sentencias;
-	NBloque() : sentencias(*(new ListaSentencias())) {};
-	NBloque(ListaSentencias& sentencias) :
+	ListaSentencias* sentencias;
+	NBloque() : sentencias(new ListaSentencias()) {};
+	NBloque(ListaSentencias* sentencias) :
 		sentencias(sentencias) { };
-	~NBloque(){};
+	~NBloque(){delete sentencias;};
 	int evaluar(DiccVariables& vars, DiccFunciones& funcs);
 };
 
