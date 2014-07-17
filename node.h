@@ -21,6 +21,7 @@ typedef std::map<std::string,NFuncion*> DiccFunciones;
 typedef std::vector<NSentencia*> ListaSentencias;
 typedef std::vector<NExpresion*> ListaExpresiones;
 typedef std::vector<NIdentificador*> ListaVariables;
+typedef std::vector<double> ListaDoubles;
 typedef std::map<std::string, double> DiccVariables;
 
 //COD OP CONDICIONES
@@ -68,14 +69,14 @@ public:
 
 class NFuncion : public Nodo {
 public:
-	const NIdentificador& id;
-	ListaVariables parametros;
+	NIdentificador& id;
+	ListaVariables& parametros;
 	NBloque& bloque;
-	NFuncion(const NIdentificador& id, 
-			const ListaVariables& parametros, NBloque& bloque) :
+	NFuncion(NIdentificador& id, 
+			ListaVariables& parametros, NBloque& bloque) :
 		id(id), parametros(parametros), bloque(bloque) { }
 	~NFuncion(){};
-	double evaluar(ListaExpresiones& argumentos, DiccVariables& vars, DiccFunciones& funcs);
+	double evaluar(ListaDoubles& argumentos, DiccFunciones& funcs);
 };
 
 class NBloque : public Nodo {
@@ -92,11 +93,12 @@ class NPloteo : public Nodo {
 public:
 	NLlamadaFuncion& func1;
 	NLlamadaFuncion& func2;
+	NIdentificador& var;
 	NExpresion& desde;
 	NExpresion& paso;
 	NExpresion& hasta;
-	NPloteo(NLlamadaFuncion& func1, NLlamadaFuncion& func2, NExpresion& desde, NExpresion& paso, NExpresion& hasta) : 
-		func1(func1), func2(func2), desde(desde), paso(paso), hasta(hasta) { };
+	NPloteo(NLlamadaFuncion& func1, NLlamadaFuncion& func2, NIdentificador& var, NExpresion& desde, NExpresion& paso, NExpresion& hasta) : 
+		func1(func1), func2(func2), var(var), desde(desde), paso(paso), hasta(hasta) { };
 	~NPloteo(){};
 };
 
@@ -190,9 +192,9 @@ public:
 
 class NLlamadaFuncion : public NExpresion {
 public:
-	const NIdentificador& id;
+	NIdentificador& id;
 	ListaExpresiones argumentos;
-	NLlamadaFuncion(const NIdentificador& id, ListaExpresiones& argumentos) :
+	NLlamadaFuncion(NIdentificador& id, ListaExpresiones& argumentos) :
 		id(id), argumentos(argumentos) { }
 	~NLlamadaFuncion(){};
 	double evaluar(DiccVariables& vars, DiccFunciones& funcs);
@@ -230,7 +232,7 @@ public:
 class NIdentificador : public NExpresion {
 public:
 	std::string nombre;
-	NIdentificador(const std::string& nombre) : nombre(nombre) { }
+	NIdentificador(std::string& nombre) : nombre(nombre) { }
 	~NIdentificador(){};
 	double evaluar(DiccVariables& vars, DiccFunciones& funcs);
 };

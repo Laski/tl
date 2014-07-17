@@ -7,22 +7,20 @@
 extern int yyparse(); //metodos de parseo generado por bison, crea el AST
 extern NPrograma* programBlock; //variable global definida en parser.y, instanciada con el root del AST en la primer produccion.
 
-std::vector<double> ejecutar_funcion(double desde, double hasta, double paso, DiccFunciones& funcs, std::string f_id){
+ListaDoubles ejecutar_funcion(NIdentificador& var, double desde, double hasta, double paso, DiccFunciones& funcs, NLlamadaFuncion& f){
 	DiccVariables vars;
-	ListaExpresiones args;
-	NFuncion *f = funcs[f_id];
-	std::vector<double> resultados;
+	ListaDoubles resultados;
 	for(double i = desde; i <= hasta; i += paso){
-		args.clear();	// la lista de parametros tiene que arrancar vacia
-		args.push_back(new NDouble(i));
-		//cout << "ARG: " << args[0]->evaluar(vars, funcs) << endl;
-		double res_i = f->evaluar(args, vars, funcs);
-		resultados.push_back(res_i);
+		vars.clear();	// la lista de variables tiene que arrancar vacia
+		vars[var.nombre] = i;
+		resultados.push_back(f.evaluar(vars, funcs));
+		DEBUG_OUT("");
+		DEBUG_OUT("");
 	}
 	return resultados;
 }
 
-void imprimir_resultados(std::vector<double> resultados, std::string f_id){
+void imprimir_resultados(ListaDoubles resultados, std::string f_id){
 	for (int i = 0; i < resultados.size(); i++){
 		double res_i = resultados[i];
 		std::cerr.precision(1);
@@ -36,20 +34,22 @@ int main(int argc, char **argv)
 	DEBUG_OUT("parse over" << std::endl);
 
 	DiccFunciones& funcs = programBlock->funciones;
-	std::string id_f1 = programBlock->ploteo.func1.id.nombre;
-	std::string id_f2 = programBlock->ploteo.func2.id.nombre;
+
+	NLlamadaFuncion& f1 = programBlock->ploteo.func1;
+	NLlamadaFuncion& f2 = programBlock->ploteo.func2;
+	NIdentificador& var = programBlock->ploteo.var;
 
 	DiccVariables v;
 	double desde = programBlock->ploteo.desde.evaluar(v, funcs);
 	double paso = programBlock->ploteo.paso.evaluar(v, funcs);
 	double hasta = programBlock->ploteo.hasta.evaluar(v, funcs);
 
-	std::vector<double> resultados_1 = ejecutar_funcion(desde, hasta, paso, funcs, id_f1);
-	std::vector<double> resultados_2 = ejecutar_funcion(desde, hasta, paso, funcs, id_f2);
+	ListaDoubles resultados_1 = ejecutar_funcion(var, desde, hasta, paso, funcs, f1);
+	ListaDoubles resultados_2 = ejecutar_funcion(var, desde, hasta, paso, funcs, f2);
 
 	/* debug */
-	imprimir_resultados(resultados_1, id_f1);
-	imprimir_resultados(resultados_2, id_f2);
+	imprimir_resultados(resultados_1, f1.id.nombre);
+	imprimir_resultados(resultados_2, f2.id.nombre);
 
 	/* salida */
 	std::cout.precision(1);

@@ -169,7 +169,7 @@ condicion :
 	;
 		
 ploteo : 
-	TPLOT TPARENL llamada_funcion TCOMA llamada_funcion TPARENR TFOR TIDENTIFICADOR TIGUAL expresion TPUNTOS expresion TPUNTOS expresion 
-	{ DEBUG_OUT("ploteo -> llamada_funcion llamada_funcion numero numero numero "); $$ = new NPloteo(*$3, *$5, *$10, *$12, *$14); }
+	TPLOT TPARENL llamada_funcion TCOMA llamada_funcion TPARENR TFOR nombre TIGUAL expresion TPUNTOS expresion TPUNTOS expresion 
+	{ DEBUG_OUT("ploteo -> llamada_funcion llamada_funcion numero numero numero "); $$ = new NPloteo(*$3, *$5, *$8, *$10, *$12, *$14); }
 	   ; 
 %%
