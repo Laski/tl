@@ -92,11 +92,6 @@ double NDouble::evaluar(DiccVariables& vars, DiccFunciones& funcs){
 	return value;
 };
 
-double NEntero::evaluar(DiccVariables& vars, DiccFunciones& funcs){
-	//DEBUG_OUT("evaluar entero: " << value);
-	return value;
-};
-
 double NOperacionAritmetica::evaluar(DiccVariables& vars, DiccFunciones& funcs){
 	DEBUG_OUT("evaluar operacion aritmetica: " << cod_op);
 	double res;

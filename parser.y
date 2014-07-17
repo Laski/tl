@@ -35,7 +35,7 @@
    they represent.
  */
  
-%token <string> TIDENTIFICADOR TENTERO TDOUBLE
+%token <string> TIDENTIFICADOR TDOUBLE
 %token <token> TIGUALIGUAL TDISTINTO TMENOR TMENORIGUAL TMAYOR TMAYORIGUAL
 %token <token> TPARENL TPARENR TLLAVEL TLLAVER TCOMA TPUNTOS
 %token <token> TMAS TMENOS TPOT TMUL TDIV
@@ -146,13 +146,12 @@ expresion:
 		| expresion TMUL expresion 		{ DEBUG_OUT("expresion -> expresion * expresion"); $$ = new NOperacionAritmetica(MUL, *$1, *$3); }
 		| expresion TDIV expresion 		{ DEBUG_OUT("expresion -> expresion / expresion"); $$ = new NOperacionAritmetica(DIV, *$1, *$3); }
 		| expresion TPOT expresion 		{ DEBUG_OUT("expresion -> expresion ** expresion"); $$ = new NOperacionAritmetica(POT, *$1, *$3); }
-		| TMENOS expresion %prec NEG 	{ DEBUG_OUT("expresion -> -expresion"); $$ = new NOperacionAritmetica(MENOS, *(new NEntero(0)), *$2); } // -x es 0-x
+		| TMENOS expresion %prec NEG 	{ DEBUG_OUT("expresion -> -expresion"); $$ = new NOperacionAritmetica(MENOS, *(new NDouble(0)), *$2); } // -x es 0-x
 		| TPARENL expresion TPARENR 	{ DEBUG_OUT("expresion -> (expresion)"); $$ = $2; }
 		;
 
 /************************************************************/
-numero : TENTERO				{  $$ = new NEntero(atol($1->c_str())); $$->value=atol($1->c_str()); DEBUG_OUT("numero -> TENTERO: " << $$->value); delete $1; }
-	| TDOUBLE					{  $$ = new NDouble(atof($1->c_str())); $$->value=atof($1->c_str()); DEBUG_OUT("numero -> TDOUBLE: " << $$->value); delete $1; }
+numero : TDOUBLE					{ $$ = new NDouble(atof($1->c_str())); $$->value=atof($1->c_str()); DEBUG_OUT("numero -> TDOUBLE: " << $$->value); delete $1; }
 	| TPI						{ DEBUG_OUT("numero -> TPI"); $$ = new NDouble(3.141592); }
 	;
 

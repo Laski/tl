@@ -43,7 +43,7 @@ int linea = 1;
 "pi"					return TOKEN(TPI);
 [a-zA-Z_][a-zA-Z0-9_]* 	SAVE_TOKEN; return TIDENTIFICADOR;
 [0-9]+\.[0-9]+ 			SAVE_TOKEN; return TDOUBLE;
-[0-9]+					SAVE_TOKEN; return TENTERO;
+[0-9]+					SAVE_TOKEN; return TDOUBLE;
 .						std::cerr << "Unknown token! " << yytext << std::endl; yyterminate();
 
 %%

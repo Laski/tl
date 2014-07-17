@@ -210,15 +210,6 @@ public:
 	double evaluar(DiccVariables& vars, DiccFunciones& funcs);
 };
 
-class NEntero : public NNumero {
-public:
-	long long value;
-	NEntero(long long val) { value = val; } //Este constructor no carga el valor en value
-	double evaluar(DiccVariables& vars, DiccFunciones& funcs);
-	NEntero(){};
-	~NEntero(){};
-};
-
 class NDouble : public NNumero {
 public:
 	double value;
