@@ -38,7 +38,7 @@
 %token <string> TIDENTIFICADOR TENTERO TDOUBLE
 %token <token> TIGUALIGUAL TDISTINTO TMENOR TMENORIGUAL TMAYOR TMAYORIGUAL
 %token <token> TPARENL TPARENR TLLAVEL TLLAVER TCOMA TPUNTOS
-%token <token> TMAS TMENOS TMUL TDIV
+%token <token> TMAS TMENOS TPOT TMUL TDIV
 %token <token> TAND TOR TNOT
 %token <token> TRETURN TIF TTHEN TELSE TWHILE TFOR TFUNC TPLOT 
 %token <token> TPI TIGUAL
@@ -68,6 +68,7 @@
 /* Operator precedence for mathematical operators */
 %left TMAS TMENOS
 %left TMUL TDIV
+%left TPOT
 %left NEG
 
 
@@ -102,7 +103,7 @@ argumentos : /* lambda */				{ DEBUG_OUT("argumentos -> lambda"); $$ = new Lista
 
 bloque : sentencia						{ DEBUG_OUT("bloque -> sentencia"); ListaSentencias *aux = new ListaSentencias; aux->push_back($1); $$ = new NBloque(*aux); } 
 	| TLLAVEL sentencias TLLAVER		{ DEBUG_OUT("bloque -> sentencias"); $$ = new NBloque(*$2); }
-	| TLLAVEL TLLAVER					{ DEBUG_OUT("bloque -> vacio"); $$ = new NBloque(); }		
+	| TLLAVEL TLLAVER					{ DEBUG_OUT("bloque -> vacio"); ListaSentencias *aux = new ListaSentencias; $$ = new NBloque(*aux); }		
 	;
 
 sentencias : sentencia					{ DEBUG_OUT("sentencias -> sentencia"); $$ = new ListaSentencias(); $$->push_back($1); }
@@ -144,6 +145,7 @@ expresion:
 		| expresion TMENOS expresion 	{ DEBUG_OUT("expresion -> expresion - expresion"); $$ = new NOperacionAritmetica(MENOS, *$1, *$3); }
 		| expresion TMUL expresion 		{ DEBUG_OUT("expresion -> expresion * expresion"); $$ = new NOperacionAritmetica(MUL, *$1, *$3); }
 		| expresion TDIV expresion 		{ DEBUG_OUT("expresion -> expresion / expresion"); $$ = new NOperacionAritmetica(DIV, *$1, *$3); }
+		| expresion TPOT expresion 		{ DEBUG_OUT("expresion -> expresion ** expresion"); $$ = new NOperacionAritmetica(POT, *$1, *$3); }
 		| TMENOS expresion %prec NEG 	{ DEBUG_OUT("expresion -> -expresion"); $$ = new NOperacionAritmetica(MENOS, *(new NEntero(0)), *$2); } // -x es 0-x
 		| TPARENL expresion TPARENR 	{ DEBUG_OUT("expresion -> (expresion)"); $$ = $2; }
 		;

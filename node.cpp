@@ -71,7 +71,7 @@ int NAsignacion::evaluar(DiccVariables& vars, DiccFunciones& funcs){
 	DEBUG_OUT("evaluar asignacion");
 	double valor = rhs.evaluar(vars, funcs); 
 	vars[lhs.nombre] = valor;
-	DEBUG_OUT("	resultado asignacion:" << lhs.nombre << " = " << valor);
+	DEBUG_OUT("	resultado asignacion: " << lhs.nombre << " = " << valor);
 	return 0;
 }
 

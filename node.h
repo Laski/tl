@@ -49,7 +49,7 @@ typedef std::map<std::string, double> DiccVariables;
 #define ASIGNACION  	4
 #define RETURN		  	5
 
-#define DEBUG 1
+#define DEBUG 0
 #define DEBUG_OUT(s) (DEBUG == 1) ? std::cerr << s << std::endl : std::cerr << ""
 #define ERROR_OUT(s) std::cout << s << std::endl
 
@@ -81,11 +81,10 @@ public:
 
 class NBloque : public Nodo {
 public:
-	ListaSentencias* sentencias;
-	NBloque() : sentencias(new ListaSentencias()) {};
-	NBloque(ListaSentencias* sentencias) :
+	ListaSentencias& sentencias;
+	NBloque(ListaSentencias& sentencias) :
 		sentencias(sentencias) { };
-	~NBloque(){delete sentencias;};
+	~NBloque(){};
 	int evaluar(DiccVariables& vars, DiccFunciones& funcs);
 };
 
