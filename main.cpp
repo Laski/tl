@@ -23,8 +23,8 @@ ListaDoubles ejecutar_funcion(NIdentificador& var, double desde, double hasta, d
 void imprimir_resultados(ListaDoubles resultados, std::string f_id){
 	for (int i = 0; i < resultados.size(); i++){
 		double res_i = resultados[i];
-		std::cerr.precision(1);
-		std::cerr << std::fixed << f_id << "(" << i << ") = " << res_i << std::endl;
+		//std::cerr.precision(1);
+		std::cerr /*<< std::fixed*/ << f_id << "(" << i << ") = " << res_i << std::endl;
 	}
 }
 
@@ -52,9 +52,9 @@ int main(int argc, char **argv)
 	imprimir_resultados(resultados_2, f2.id.nombre);
 
 	/* salida */
-	std::cout.precision(1);
+	//std::cout.precision(1);
 	for (int i = 0; i < resultados_1.size(); i++){
-		std::cout << std::fixed << resultados_1[i] << " " << resultados_2[i] << std::endl;
+		std::cout /*<< std::fixed */<< resultados_1[i] << " " << resultados_2[i] << std::endl;
 	}
 
 	return 0;
