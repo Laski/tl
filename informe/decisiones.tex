@@ -1,0 +1,15 @@
+\subsection{BISON}
+Como se nombró en la introducción, para la implementación del parser decidimos usar BISON. Esto se debe a la documentación que encontramos para desarrollar el parser y a la aparente sencillez para usarlo.
+
+\subsection{Comentarios}
+Con respecto al uso de comentarios en el código fuente, para la primer entrega decidimos usar el comando \textit{sed} para eliminarlos. Esta decisión fue más que nada por ignorancia de cómo implementarlo en BISON. 
+
+Para esta segunda entrega, el lexer se encarga de detectar los comentarios.
+
+
+\subsection{Curiosidades}
+Un detalle que no pudimos confirmar su procedencia, es el error de redondeo que causa nuestra implementación.
+
+En un comienzo, creímos que se debía al uso de Int's en vez de Float's, pero finalmente vimos que no era esa la razón. También creímos que podía ser la precisión de PI, pero \textit{bspline} no utiliza PI.
+
+No logramos encontrar una explicación acorde para este problema.
