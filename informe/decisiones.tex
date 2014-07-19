@@ -7,9 +7,10 @@ Con respecto al uso de comentarios en el código fuente, para la primer entrega 
 Para esta segunda entrega, el lexer se encarga de detectar los comentarios.
 
 
-\subsection{Curiosidades}
-Un detalle que no pudimos confirmar su procedencia, es el error de redondeo que causa nuestra implementación.
+\subsection{Redondeo}
+Este fue un detalle que en principio no pudimos confirmar su procedencia: el error de redondeo que causaba nuestra implementación.
 
 En un comienzo, creímos que se debía al uso de Int's en vez de Float's, pero finalmente vimos que no era esa la razón. También creímos que podía ser la precisión de PI, pero \textit{bspline} no utiliza PI.
 
-No logramos encontrar una explicación acorde para este problema.
+Finalmente, usando la precisión estándar de cout se corrigieron los errores de redondeo.
+
