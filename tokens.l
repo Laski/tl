@@ -11,6 +11,8 @@ int linea = 1;
 %%
 [ \t]					;
 [\n]					DEBUG_OUT("Linea: " << linea); linea++;
+"/*"([^*]|[\r\n]|("*"+([^*/]|[\r\n])))*"*"+"/" ;
+"//".*					;
 "return"				return TOKEN(TRETURN);
 "if"					return TOKEN(TIF);
 "then"					return TOKEN(TTHEN);
