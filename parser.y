@@ -6,7 +6,13 @@
 	NPrograma *programBlock; /* the top level root Nodo of our final AST */
 
 	extern int yylex();
-	void yyerror(const char *s) { std::printf("Error: %s\n", s);std::exit(1); }
+	extern int yylineno;
+	extern char* yytext;
+	extern int yychar;
+	void yyerror(const char *s) { 
+		std::cout << "ERROR de parseo: Encontré '" << yytext << "' pero esperaba otro símbolo." << std::endl;
+		std::exit(1);
+	 }
 %}
 
 /* Represents the many different ways we can access our data */
@@ -68,8 +74,8 @@
 /* Operator precedence for mathematical operators */
 %left TMAS TMENOS
 %left TMUL TDIV
-%left TPOT
 %left NEG
+%left TPOT
 
 
 %start programa
@@ -82,8 +88,7 @@ programa : funciones ploteo								{DEBUG_OUT("programa -> funciones ploteo"); $
 // Acá usamos el diccionario. Por alguna razon no compila si usamos el operator[], por lo que tuve que usar insert y quedo más feo.	
 funciones : funciones funcion								{DEBUG_OUT("funciones -> funciones funcion"); 
 																if($1->find($2->id.nombre) != $1->end()){
-																	ERROR_OUT("ERROR: funcion '" << $2->id.nombre << "' declarada dos veces.");
-																	YYABORT;
+																	ERROR_OUT("de parseo: la funcion '" << $2->id.nombre << "' fue declarada más de una vez.");
 																}else 
 																	$1->insert(std::pair<std::string, NFuncion*>($2->id.nombre, $2)); }
 	  | funcion 											{ DEBUG_OUT("funciones -> funcion" ); $$ = new DiccFunciones(); 
@@ -136,7 +141,6 @@ expresiones : /* lambda */			{ DEBUG_OUT("expresiones -> lambda"); $$ = new List
 	;
 
 /*http://www-h.eng.cam.ac.uk/help/tpl/languages/flexbison/*/
-
 expresion:
 		 numero							{ DEBUG_OUT("expresion -> numero"); $$ = $1; }		
 		| nombre						{ DEBUG_OUT("expresion -> nombre"); $$ = new NIdentificador(*$1); delete $1; }
@@ -167,10 +171,11 @@ condicion :
 	| expresion TMENORIGUAL expresion					{ DEBUG_OUT("condicion -> expresion <= expresion"); $$ = new NComparacion(MENORIGUAL, *$1, *$3); } 
 	| expresion TMAYOR expresion						{ DEBUG_OUT("condicion -> expresion > expresion"); $$ = new NComparacion(MAYOR, *$1, *$3); } 
 	| expresion TMAYORIGUAL expresion					{ DEBUG_OUT("condicion -> expresion >= expresion"); $$ = new NComparacion(MAYORIGUAL, *$1, *$3); } 
+	| expresion 			 							{ ERROR_OUT("de parseo: Se encontró '" << yytext << "' pero se esperaba un símbolo de comparación."); }
 	;
 		
 ploteo : 
 	TPLOT TPARENL llamada_funcion TCOMA llamada_funcion TPARENR TFOR nombre TIGUAL expresion TPUNTOS expresion TPUNTOS expresion 
 	{ DEBUG_OUT("ploteo -> llamada_funcion llamada_funcion numero numero numero "); $$ = new NPloteo(*$3, *$5, *$8, *$10, *$12, *$14); }
-	   ; 
+	| TPLOT TIDENTIFICADOR { ERROR_OUT("de parseo: Encontré '" << yytext << "', pero esperaba '('."); } 
 %%

@@ -48,9 +48,11 @@ int main(int argc, char **argv)
 	ListaDoubles resultados_2 = ejecutar_funcion(var, desde, hasta, paso, funcs, f2);
 
 	/* debug */
-	imprimir_resultados(resultados_1, f1.id.nombre);
-	imprimir_resultados(resultados_2, f2.id.nombre);
-
+	if (DEBUG){
+		imprimir_resultados(resultados_1, f1.id.nombre);
+		imprimir_resultados(resultados_2, f2.id.nombre);
+	}
+	
 	/* salida */
 	//std::cout.precision(1);
 	for (int i = 0; i < resultados_1.size(); i++){

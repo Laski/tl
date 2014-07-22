@@ -2,6 +2,8 @@
 #define NODE_H_INCLUDED
 
 #include <iostream>
+#include <cstdio>
+#include <cstdlib>
 #include <vector>
 #include <map>
 #include <string>
@@ -51,7 +53,7 @@ typedef std::map<std::string, double> DiccVariables;
 
 #define DEBUG 0
 #define DEBUG_OUT(s) (DEBUG == 1) ? std::cerr << s << std::endl : std::cerr << ""
-#define ERROR_OUT(s) std::cout << s << std::endl
+#define ERROR_OUT(s) std::cerr << "ERROR " << s << std::endl; std::exit(1)
 
 class Nodo {
 public:
@@ -72,9 +74,10 @@ public:
 	NIdentificador& id;
 	ListaVariables& parametros;
 	NBloque& bloque;
+	void verificar(NBloque& bloque);
 	NFuncion(NIdentificador& id, 
 			ListaVariables& parametros, NBloque& bloque) :
-		id(id), parametros(parametros), bloque(bloque) { }
+		id(id), parametros(parametros), bloque(bloque) {verificar(bloque);}
 	~NFuncion(){};
 	double evaluar(ListaDoubles& argumentos, DiccFunciones& funcs);
 };
@@ -86,6 +89,7 @@ public:
 		sentencias(sentencias) { };
 	~NBloque(){};
 	int evaluar(DiccVariables& vars, DiccFunciones& funcs);
+	bool tiene_return();
 };
 
 class NPloteo : public Nodo {
@@ -97,7 +101,7 @@ public:
 	NExpresion& paso;
 	NExpresion& hasta;
 	NPloteo(NLlamadaFuncion& func1, NLlamadaFuncion& func2, NIdentificador& var, NExpresion& desde, NExpresion& paso, NExpresion& hasta) : 
-		func1(func1), func2(func2), var(var), desde(desde), paso(paso), hasta(hasta) { };
+		func1(func1), func2(func2), var(var), desde(desde), paso(paso), hasta(hasta) {  }
 	~NPloteo(){};
 };
 
@@ -110,21 +114,21 @@ public:
 
 class NSentencia : public Nodo {
 public:
-	int cod_sent;
-	virtual int evaluar(DiccVariables& vars, DiccFunciones& funcs) = 0; //devuelve 1 si ejecuto return
 	NSentencia(){};
 	~NSentencia(){};
+	virtual int evaluar(DiccVariables& vars, DiccFunciones& funcs) = 0; //devuelve 1 si ejecuto return
+	virtual bool tiene_return(){return false;}
 };
 
 class NReturn : public NSentencia {
 public:
 	NExpresion& expresion;
 	NReturn(NExpresion& expresion) : 
-		expresion(expresion) { cod_sent = RETURN; };
+		expresion(expresion) { };
 	~NReturn(){};
 
 	int evaluar(DiccVariables& vars, DiccFunciones& funcs);
-
+	bool tiene_return(){return true;}
 };
 
 class NIfThen : public NSentencia {
@@ -132,10 +136,11 @@ public:
 	NCondicion& cond;
 	NBloque& bloque;
 	NIfThen(NCondicion& cond, NBloque& bloque) : 
-		cond(cond), bloque(bloque) { cod_sent = IFTHEN; }
+		cond(cond), bloque(bloque) { }
 	~NIfThen(){};
 
 	int evaluar(DiccVariables& vars, DiccFunciones& funcs);
+	bool tiene_return(){return bloque.tiene_return();}
 };
 
 class NIfThenElse : public NSentencia {
@@ -144,9 +149,10 @@ public:
 	NBloque& bloqueT;
 	NBloque& bloqueF;
 	NIfThenElse(NCondicion& cond, NBloque& bloqueT, NBloque& bloqueF) : 
-		cond(cond), bloqueT(bloqueT), bloqueF(bloqueF) { cod_sent = IFTHENELSE; }
+		cond(cond), bloqueT(bloqueT), bloqueF(bloqueF) { }
 	~NIfThenElse(){};
 	int evaluar(DiccVariables& vars, DiccFunciones& funcs);
+	bool tiene_return(){return bloqueT.tiene_return() and bloqueF.tiene_return();}
 };
 
 class NWhile : public NSentencia {
@@ -154,9 +160,10 @@ public:
 	NCondicion& cond;
 	NBloque& bloque;
 	NWhile(NCondicion& cond, NBloque& bloque) : 
-		cond(cond), bloque(bloque) { cod_sent = WHILE; }
+		cond(cond), bloque(bloque) { }
 	~NWhile(){};
 	int evaluar(DiccVariables& vars, DiccFunciones& funcs);
+	bool tiene_return(){return bloque.tiene_return();}
 };
 
 class NAsignacion : public NSentencia {
@@ -164,7 +171,7 @@ public:
 	NIdentificador& lhs;
 	NExpresion& rhs;
 	NAsignacion(NIdentificador& lhs, NExpresion& rhs) : 
-		lhs(lhs), rhs(rhs) { cod_sent = ASIGNACION; }
+		lhs(lhs), rhs(rhs) { }
 	~NAsignacion(){};
 	int evaluar(DiccVariables& vars, DiccFunciones& funcs);
 };
@@ -213,7 +220,7 @@ public:
 class NDouble : public NNumero {
 public:
 	double value;
-	NDouble(double val) { value = val; } //Este constructor no carga el valor en value
+	NDouble(double val) { value = val; };
 	double evaluar(DiccVariables& vars, DiccFunciones& funcs);
 	NDouble(){};
 	~NDouble(){};

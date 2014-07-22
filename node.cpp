@@ -3,8 +3,12 @@
 
 double NFuncion::evaluar(ListaDoubles& argumentos, DiccFunciones& funcs){
 	DEBUG_OUT("evaluar funcion: " << id.nombre);
-	
-	//evaluar argumentos
+	//chequeo cantidad de argumentos
+	if (parametros.size() != argumentos.size()){
+		ERROR_OUT("de ejecución: La cantidad de argumentos de '" << id.nombre << "' no coincide con su declaración.");
+	}
+
+	//instancio argumentos como variables locales
 	DiccVariables vars;
 	for(int i = 0; i < argumentos.size(); i++){
 		vars[parametros[i]->nombre] = argumentos[i];
@@ -15,6 +19,15 @@ double NFuncion::evaluar(ListaDoubles& argumentos, DiccFunciones& funcs){
 	bloque.evaluar(vars, funcs);
 	DEBUG_OUT("	resultado funcion " << id.nombre << ": " << vars["__res__"]);
 	return vars["__res__"];
+}
+
+void NFuncion::verificar(NBloque& bloque){
+	// toda función debe tener un return en su bloque de sentencias
+	if (bloque.tiene_return()){
+		return;
+	} else {
+		ERROR_OUT("de ejecución: Toda función debe devolver algo.");
+	}
 }
 
 int NBloque::evaluar(DiccVariables& vars, DiccFunciones& funcs){
@@ -28,6 +41,15 @@ int NBloque::evaluar(DiccVariables& vars, DiccFunciones& funcs){
 		it++;
 	}
 	return estado;
+}
+
+bool NBloque::tiene_return(){
+	for(ListaSentencias::iterator it = sentencias.begin(); it != sentencias.end(); it++){
+		if ((*it)->tiene_return()){
+			return true;
+		}
+	}
+	return false;
 }
 
 int NReturn::evaluar(DiccVariables& vars, DiccFunciones& funcs){
@@ -82,6 +104,10 @@ double NLlamadaFuncion::evaluar(DiccVariables& vars, DiccFunciones& funcs){
 	for (int i = 0; i < argumentos.size(); i++){
 		args_evaluados.push_back(argumentos[i]->evaluar(vars, funcs));
 	}
+	//verifico que exista una función con este nombre
+	if (funcs.find(id.nombre) == funcs.end()){
+		ERROR_OUT("de ejecución: La función de nombre '" << id.nombre << "' no está definida.");
+	}
 	double res = funcs[id.nombre]->evaluar(args_evaluados, funcs);
 	//DEBUG_OUT("	resultado llamada funcion: " << res);
 	return res;
@@ -118,7 +144,7 @@ double NOperacionAritmetica::evaluar(DiccVariables& vars, DiccFunciones& funcs){
 
 double NIdentificador::evaluar(DiccVariables& vars, DiccFunciones& funcs){
 	DEBUG_OUT("evaluar identificador: " << nombre << " -> " << vars[nombre] );
-	return vars[nombre]; //si la variable no está definida deberíamos poder atrapar el error en el parsing
+	return vars[nombre];
 }
 
 bool NOperacionBooleana::evaluar(DiccVariables& vars, DiccFunciones& funcs){

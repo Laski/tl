@@ -1,0 +1,11 @@
+function f(x)
+	return x+1
+	
+function f(x)
+	return x+2
+
+plot (f(x), g(x)) for x=1..1..5
+
+/* Salida:
+ERROR de parseo: la funcion 'f' fue declarada más de una vez.
+*/
