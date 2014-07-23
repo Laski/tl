@@ -16,22 +16,13 @@ codigo1
 else
 codigo2
 \end{verbatim}
-que se refleja en el parser en un conflicto shift/reduce (cuando termina el codigo1 y viene un else puede tanto consumir el else y shiftear como reducir lo que ya tiene).
-Para resolverlo, nos basamos en el comportamiento de C en este caso (hacer shift, es decir, que el código se lea como
-\begin{verbatim}
-if cond1 then
-  if cond2 then
-    codigo1
-  else
-    codigo2
-\end{verbatim}
-) y como Bison por defecto elije hacer siempre shift lo dejamos así.
+que se refleja en el parser en un conflicto shift/reduce, como ya explicamos anteriormente (junto con la forma de resolución que elegimos). Es decir: nuestra gramática es ambigua.
 
-Una $expresion$ puede ser un $numero$ (double o $\pi$), una $llamada_funcion$ (el nombre de una función con más $expresiones$ entre paréntesis como argumentos) u operaciones aritméticas entre expresiones. Para salvar las ambiguedades propias de esta parte de la gramática le indicamos a Bison la precedencia de los operadores\footnote{basándonos en el código de ejemplo de http://www-h.eng.cam.ac.uk/help/tpl/languages/flexbison/}.
+Una $expresion$ puede ser un $numero$ (double o $\pi$), una $llamada_funcion$ (el nombre de una función con más $expresiones$ entre paréntesis como argumentos) u operaciones aritméticas entre expresiones. Para salvar las ambiguedades propias de esta parte de la gramática le indicamos a BISON la precedencia de los operadores\footnote{basándonos en el código de ejemplo de http://www-h.eng.cam.ac.uk/help/tpl/languages/flexbison/}.
 
-Una $condicion$ puede ser una comparación entre dos $expresion$es u otras condiciones con operadores lógicos.
+Una $condicion$ puede ser una comparación entre dos $expresion$es o varias condiciones unidas con operadores lógicos.
 
-Por último, la instrucción $ploteo$ consiste en dos $llamada_funcion$ con un $nombre$ de variable y tres $expresion$es que reflejan el inicio, el paso y el final.
+Por último, la instrucción $ploteo$ consiste en dos $llamada\_funcion$ con un $nombre$ de variable y tres $expresion$es que reflejan el inicio, el paso y el final.
 
 La gramática se complementa con un archivo\footnote{tokens.l} con directivas para el tokenizador, que le permite convertir símbolos terminales en los tokens que usamos, ignora saltos de línea y maneja números enteros, floats y cadenas arbitrarias (como los nombres de variables).
 

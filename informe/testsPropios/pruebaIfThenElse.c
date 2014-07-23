@@ -6,7 +6,7 @@ int test(){
 	if (0)
 		if (1)
 			return 1;
-		else	/* ...porque este else se asocia con el último if */
+		else	/* ...porque este else se asocia con el ultimo if */
 			return 2;
 	return 0;
 }

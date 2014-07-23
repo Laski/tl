@@ -5,6 +5,9 @@ Para probar la funcionalidad de nuestro parser primogénito creamos los siguient
 	\lstinputlisting{testsPropios/testBueno1.cod}
 	Salida:
 	\lstinputlisting{testsPropios/salidaTest1.out}
+
+Como sus comentarios lo indican, este test permite probar algunas de las funcionalidades básicas computando la función de Fibonacci.
+
 \subsection{Test de más funcionalidades}
 	El código se encuentra en testsPropios/testBueno2.cod
 	\lstinputlisting{testsPropios/testBueno2.cod}
@@ -20,8 +23,9 @@ Ambos tests dan el siguiente gráfico, como era esperado:
 	Salida:
 	\lstinputlisting{testsPropios/salidaTest3.out}
 	
-	
-	
-	En este ejemplo vemos cómo resolvimos el problema de la desambiguación de los ifthenelse anidados. Nuestro enfoque es el mismo que el útilizado en lenguajes de programación conocidos como C. Podemos ver un ejemplo con el siguiente código:
+	En este ejemplo vemos cómo resolvimos el problema de la desambiguación de los ifthenelse anidados. Nuestro enfoque es el mismo que el útilizado en lenguajes de programación conocidos como C o C++. Podemos ver un ejemplo con el siguiente código:
 		\lstinputlisting{testsPropios/pruebaIfThenElse.c}
 	
+	Para garantizar dicho funcionamiento no hizo falta modificar nada. Ante el conflicto Shift-Reduce BISON elige siempre Shift por defecto, con lo cual el resultado es el esperado.
+	
+	\textbf{Nota}: El conflicto redunda en un Shift-Reduce porque nuestra gramática presenta una ambigüedad: al encontrar el segundo $else$ como lookahead BISON no sabe si aplicar un Reduce (reducir el código del $if$ más interno a un símbolo $IfThen$ y ``asociar'' luego el $else$ al $if$ externo) o un Shift (consumir el $else$ con su bloque de código para después reducir el $if$ lo más interno a un símbolo $IfThenElse$ y el más externo a un $IfThen$).

@@ -1,17 +1,17 @@
 \subsection{1er Pregunta}
 
-Para verificar estáticamente que las condiciones de los if y los while sean booleanos se puede utilizar, en la gramática, un no terminal que represente únicamente operaciones booleanas (por ej comparación). De esta forma la gramática se asegura de que las condiciones sean booleanas y al momento de parsear el código se verifica el cumplimiento de ese requisito. De hecho es así como lo implementamos nosotros.
+Para verificar estáticamente que las condiciones de los if y los while sean booleanos se puede utilizar, en la gramática, un no terminal que represente únicamente operaciones booleanas (por ej comparación). De esta forma la gramática se asegura de que las condiciones sean booleanas y al momento de parsear el código se verifica el cumplimiento de ese requisito. De hecho, es así como lo implementamos nosotros.
 
 En los lenguajes de programación tipados probablemente la gramática permita que las condiciones de los if no sean únicamente booleanos pero se verifica a la hora del chequeo de tipos (ya sea estático o dinámico).
 
-\subsection{2da Pregunta} El uso del ; en la gramática de C++ permite desambiguar código. Veamoslo con un ejemplo para dejarlo más claro:
+\subsection{2da Pregunta} El uso del ; en la gramática de C permite desambiguar código. Veámoslo con un ejemplo:
 
 \lstinputlisting{testsPropios/pruebaPuntoYComa.c}
 
-Este es el código de un ejemplo básico de C++. Lo interesante es que, a diferencia de nuestro lenguaje, nos permite poner expresiones como si fueran instrucciones. Las llamadas a funciones en C/C++ son sentencias, a diferencia de nuestro lenguaje donde ninguna funcion tienen efectos secundarios. 
+Este es el código de un ejemplo básico de C. Lo interesante es que, a diferencia de nuestro lenguaje, nos permite poner expresiones como si fueran instrucciones. Las llamadas a funciones en C/C++ son sentencias, a diferencia de nuestro lenguaje donde ninguna funcion tienen efectos secundarios. 
 
 Es por esto que si quitamos los ; del código de ejemplo nos queda una ambigüedad.
 
 \subsection{3ra pregunta}
 El orden de definición de las funciones solo importa si queremos verificar, en tiempo de parseo, que las llamadas a función invoquen a una función. Esto se debe a que, al encontrarnos con una llamada a función, solo conoceríamos las funciones que ya parseamos hasta ese momento. Una posible solución es hacer el parsing en dos pasadas, una para reconocer (y guardar en memoria) todos los nombres de función y otra para generar el arbol sintáctico. En nuestro caso, para resolver el problema, no hizo falta este enfoque, ya que verificamos en tiempo de ejecución que las llamadas a función invoquen a funciones válidas.
-Por otro lado para soportar recursión se necesita tener un stack de variables locales por cada llamada a función, lo que permite que dos llamadas a la misma función incluso aunque estén anidadas sean independientes y tengan el comportamiento esperado. Es así como nosotros lo implementamos y por eso nuestro lenguaje soporta recursión.
+Por otro lado, para soportar recursión se necesita tener un stack de variables locales por cada llamada a función, lo que permite que dos llamadas a la misma función incluso aunque estén anidadas sean independientes y tengan el comportamiento esperado. Es así como nosotros lo implementamos y por eso nuestro lenguaje soporta recursión.

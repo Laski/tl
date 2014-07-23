@@ -17,12 +17,12 @@ function fact(x){
 
 plot (id(x), fact(x)) for x=1..1..6
 
-/* Test de funcionalidades básicas: 
-	Definición de funciones.
+/* Test de funcionalidades basicas: 
+	Definicion de funciones.
 	Ciclos while.
 	Condiciones ifthenelse.
 	Variables locales.
-	Aritmética básica.	
-	Comparación de expresiones.
+	Operaciones aritmeticas basicas.	
+	Comparacion de expresiones.
 	Varios puntos de retorno.
 */

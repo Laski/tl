@@ -4,6 +4,6 @@ int f(){
 
 int main(){
 	int x = 0;
-	-f(); /* sin ';', esto se interpretaría como int x = 0 -f() */
+	-f(); /* sin ';', esto se interpretaria como int x = 0-f() */
 	return 0;
 }

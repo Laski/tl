@@ -7,5 +7,5 @@ function g(x)
 plot (f(x), g(x)) for x=1..1..5
 
 /* Salida:
-ERROR de ejecución: Toda función debe devolver algo.
+ERROR de ejecucion: Toda funcion debe devolver algo.
 */

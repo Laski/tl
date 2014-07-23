@@ -1,23 +1,25 @@
 function dos(x){
-	/* esta función debería devolver siempre 2 */
+	/* esta función deberia devolver siempre 2 */
 	if 0 != 0 then
 		if 1 == 1 then
 			return 0
-		else	/* este else debería asociarse (como indica la indentación) con el último if, no con el primero */
+		else	/* este else deberia asociarse (como indica
+			la indentacion) con el ultimo if, no con el
+			primero */
 			return 1
 	return 2
 }
 
 function tres(x){
-	/* esta función debería devolver siempre 3 */
+	/* esta funcion deberia devolver siempre 3 */
 	return 35+dos(x)*-4**2
 }
 
 
 plot (dos(x), tres(x)) for x=1..1..6
 
-/* Tests de desambiguación:
-	 De precedencia de operaciones aritméticas.
-	 De ifthenelse: resolución estándar al conocido conflicto shift/reduce.
-   y correcto funcionamiento de la potencia.
+/* Tests de desambiguacion:
+	 De precedencia de operaciones aritmeticas.
+	 De ifthenelse: resolucion estándar al conocido conflicto shift/reduce.
+   y correcto funcionamiento de la potencia (**).
 */

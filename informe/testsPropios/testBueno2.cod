@@ -12,8 +12,8 @@ function fact(x){
 
 plot (id(x), fact(x)) for x=1..1..6
 
-/* Test de más funcionalidades: 
-	Recursión.
+/* Test de mas funcionalidades: 
+	Recursion.
 	Llamados a funciones.
 	Expresiones anidadas.
 */

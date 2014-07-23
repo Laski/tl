@@ -2,15 +2,21 @@
 Como se nombró en la introducción, para la implementación del parser decidimos usar BISON. Esto se debe a la documentación que encontramos para desarrollar el parser y a la aparente sencillez para usarlo.
 
 \subsection{Comentarios}
-Con respecto al uso de comentarios en el código fuente, para la primer entrega decidimos usar el comando \textit{sed} para eliminarlos. Esta decisión fue más que nada por ignorancia de cómo implementarlo en FLEX o BISON. 
+Con respecto al uso de comentarios en el código fuente, para la primer entrega decidimos usar el comando \textit{sed} para eliminarlos. Esta decisión fue mayormente motivada por ignorancia de cómo implementarlo en Flex o BISON. 
 
 Para esta segunda entrega, el lexer se encarga de detectar los comentarios. Es decir, es el lexer el que, al tokenizar, descarta los bloques de texto que son comentarios, con lo cual el parser ni siquiera debe tenerlos en cuenta.
 
-
 \subsection{Redondeo}
-Este fue un detalle que en principio no pudimos confirmar su procedencia: el error de redondeo que causaba nuestra implementación.
+Este fue un detalle el cual, en principio, no pudimos confirmar su procedencia: el error de redondeo que causaba nuestra implementación y provocaba leves diferencias en los gráficos.
 
-En un comienzo, creímos que se debía al uso de Int's en vez de Float's, pero finalmente vimos que no era esa la razón. También creímos que podía ser la precisión de PI, pero \textit{bspline} no utiliza PI.
+En un comienzo, creímos que se debía al uso de Int's en vez de Float's, pero rápidamente confirmamos que no era esa la razón. Tampoco lo fueron los dígitos de Pi
 
-Finalmente, usando la precisión estándar de cout se corrigieron los errores de redondeo.
+Finalmente, usando la precisión estándar de $cout$ se corrigieron los errores de redondeo.
 
+\subsection{Tipos de datos}
+Aunque no estaba especificado en el enunciado, decidimos que todas las funciones retornan $double$s, que a su vez, por simplicidad, es nuestro único tipo de datos para variables y operaciones aritméticas.
+
+\subsection{Ifs anidados}
+Para solucionar el conocido problema de ambigüedad de los If's anidados, decidimos verificar cuál es el comportamiento estándar de C++ e imitarlo.
+
+Más detalles en la sección de Resultados.
