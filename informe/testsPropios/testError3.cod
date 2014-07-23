@@ -1,5 +1,5 @@
 function f(x)
-	if x
+	if x then
 		return x
 
 function g(x)
@@ -8,5 +8,5 @@ function g(x)
 plot (f(x), g(x)) for x=1..1..5
 
 /* Salida:
-ERROR de parseo: Se encontró 'return' pero se esperaba un símbolo de comparación.
+ERROR de parseo: Se encontró 'then' pero se esperaba un símbolo de comparación.
 */
