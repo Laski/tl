@@ -2,9 +2,9 @@
 Como se nombró en la introducción, para la implementación del parser decidimos usar BISON. Esto se debe a la documentación que encontramos para desarrollar el parser y a la aparente sencillez para usarlo.
 
 \subsection{Comentarios}
-Con respecto al uso de comentarios en el código fuente, para la primer entrega decidimos usar el comando \textit{sed} para eliminarlos. Esta decisión fue más que nada por ignorancia de cómo implementarlo en BISON. 
+Con respecto al uso de comentarios en el código fuente, para la primer entrega decidimos usar el comando \textit{sed} para eliminarlos. Esta decisión fue más que nada por ignorancia de cómo implementarlo en FLEX o BISON. 
 
-Para esta segunda entrega, el lexer se encarga de detectar los comentarios.
+Para esta segunda entrega, el lexer se encarga de detectar los comentarios. Es decir, es el lexer el que, al tokenizar, descarta los bloques de texto que son comentarios, con lo cual el parser ni siquiera debe tenerlos en cuenta.
 
 
 \subsection{Redondeo}

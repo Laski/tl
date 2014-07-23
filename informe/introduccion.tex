@@ -1,10 +1,10 @@
-El objetivo del Trabajo Práctico es crear un lenguaje de programación imperativo que permita definir funciones que serán evaluadas y nos permitirán traficar curvas paramédicas en el plano. 
+El objetivo del Trabajo Práctico es crear un lenguaje de programación imperativo que permita definir funciones que serán evaluadas y nos permitirán graficar curvas paramétricas en el plano. 
 
 Para esto, tuvimos que decidir e implementar los siguientes puntos:
 \begin{itemize}
-\item La gramática que vamos a usar para la implementación
-\item El analizador léxico que recibe el código fuente
-\item El parser que toma los tokens y verifica que coincida con la gramática
+\item La gramática que define el lenguaje especificado por la cátedra.
+\item El analizador léxico que recibe el código fuente y lo tokeniza.
+\item El parser que toma los tokens, verifica que coincida con la gramática y genera el Abstract Syntax Tree
 \item El Abstract Syntax Tree que permite representar las funciones del código fuente
 \end{itemize}
-Para la implementación decidimos utilizar BISON y C++ y utilizamos como referencia la documentación de BISON y el blog que fue recomendado.
+Utilizamos Flex y BISON para implementar el lexer y el parser respectivamente. Y el lenguaje de programación utilizado fue C++.
