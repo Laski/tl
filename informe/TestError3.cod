@@ -1,0 +1,12 @@
+function f(x)
+	if x
+		return x
+
+function g(x)
+	return x+1
+
+plot (f(x), g(x)) for x=1..1..5
+
+/* Salida:
+ERROR de parseo: Se encontró 'return' pero se esperaba un símbolo de comparación.
+*/
